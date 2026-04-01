@@ -7,17 +7,6 @@
 {% block content %}
 <style>
     /* Enhanced Styling while maintaining structure */
-    #courseSearchInput {
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        transition: all 0.3s ease;
-    }
-    
-    #courseSearchInput:focus {
-        border-color: #0066cc;
-        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-    }
-    
     .course-card-horizontal {
         transition: all 0.3s ease;
     }
@@ -40,29 +29,6 @@
         <h1>Browse All Courses</h1>
         <p class="text-muted">Explore and enroll in courses that interest you</p>
     </div>
-</div>
-
-<!-- Search Bar -->
-<div class="row mb-4">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                <input type="text" id="courseSearchInput" class="form-control" placeholder="Search courses..." autocomplete="off">
-                <small class="text-muted" style="display: block; margin-top: 0.5rem;">Search by course name, instructor, or category</small>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Search Results Info -->
-<div id="searchResultsInfo" style="display: none; padding: 1rem; background: #f0f7ff; border-radius: 8px; border-left: 3px solid #0066cc; margin-bottom: 1.5rem;">
-    <i class="bi bi-info-circle"></i> <span id="resultsCount">0</span> course(s) found matching your search.
-</div>
-
-<!-- No Results Message -->
-<div id="noResultsMessage" style="display: none; text-align: center; padding: 3rem 1rem;">
-    <i class="bi bi-search" style="font-size: 3rem; color: #ccc;"></i>
-    <p style="color: #666; margin-top: 1rem;">No courses found matching "<span id="searchedTerm"></span>". Try searching with different keywords.</p>
 </div>
 
 <!-- Courses Grid -->
@@ -292,70 +258,4 @@
     </div>
 {% endif %}
 
-<!-- Real-time Search Script -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('courseSearchInput');
-        const coursesContainer = document.getElementById('coursesContainer');
-        const noResultsMessage = document.getElementById('noResultsMessage');
-        const searchResultsInfo = document.getElementById('searchResultsInfo');
-        const resultsCount = document.getElementById('resultsCount');
-        const searchedTerm = document.getElementById('searchedTerm');
-        
-        if (!searchInput) return;
-        
-        // Real-time search on input
-        searchInput.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            
-            if (!coursesContainer) return;
-            
-            const courseCards = coursesContainer.querySelectorAll('.course-card-horizontal');
-            let visibleCount = 0;
-            
-            courseCards.forEach(card => {
-                const courseName = card.dataset.courseName || '';
-                const courseInstructor = card.dataset.courseInstructor || '';
-                const courseCategory = card.dataset.courseCategory || '';
-                
-                // Check if search term matches course name, instructor, or category
-                const matches = courseName.includes(searchTerm) || 
-                               courseInstructor.includes(searchTerm) || 
-                               courseCategory.includes(searchTerm);
-                
-                if (searchTerm === '') {
-                    // Show all courses when search is empty
-                    card.style.display = '';
-                    visibleCount++;
-                } else if (matches) {
-                    // Show matching courses
-                    card.style.display = '';
-                    visibleCount++;
-                } else {
-                    // Hide non-matching courses
-                    card.style.display = 'none';
-                }
-            });
-            
-            // Show/hide results info
-            if (searchTerm === '') {
-                searchResultsInfo.style.display = 'none';
-                noResultsMessage.style.display = 'none';
-            } else {
-                if (visibleCount === 0) {
-                    searchResultsInfo.style.display = 'none';
-                    noResultsMessage.style.display = 'block';
-                    searchedTerm.textContent = searchTerm;
-                } else {
-                    searchResultsInfo.style.display = 'block';
-                    noResultsMessage.style.display = 'none';
-                    resultsCount.textContent = visibleCount;
-                }
-            }
-        });
-        
-        // Clear search on page load (if user refreshes)
-        searchInput.value = '';
-    });
-</script>
 {% endblock %}
