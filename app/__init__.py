@@ -215,7 +215,7 @@ def create_app(config_name='development'):
             
             if not all([title, description, category]):
                 flash('All fields are required', 'danger')
-                return redirect(url_for('create_course'))
+                return redirect(url_for('dashboard'))
             
             course = Course(
                 title=title,
@@ -228,9 +228,10 @@ def create_app(config_name='development'):
             db.session.commit()
             
             flash('Course created successfully!', 'success')
-            return redirect(url_for('view_courses'))
+            return redirect(url_for('dashboard'))
         
-        return render_template('create_course.html')
+        # For GET requests, redirect to dashboard where the modal is
+        return redirect(url_for('dashboard'))
     
     # ==================== Enrollment Routes ====================
     
