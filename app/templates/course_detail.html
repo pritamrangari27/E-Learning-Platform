@@ -645,6 +645,31 @@
     .lessons-section {
         margin-bottom: 0;
     }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    .lessons-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .sidebar-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    @media (max-width: 1024px) {
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
 <!-- Course Hero Header -->
@@ -704,9 +729,9 @@
 </div>
 
 <!-- Main Content -->
-<div class="row">
+<div class="content-grid">
     <!-- Lessons Section -->
-    <div class="col-lg-8 lessons-section">
+    <div class="lessons-container">
         <div class="section-title">
             <i class="bi bi-file-earmark-text"></i>
             Course Lessons
@@ -804,10 +829,9 @@
     </div>
 
     <!-- Sidebar -->
-    <div class="col-lg-4">
-        <div class="sidebar-wrapper">
-            <!-- Progress Card -->
-            {% if enrollment %}
+    <div class="sidebar-container">
+        <!-- Progress Card -->
+        {% if enrollment %}
             <div class="sidebar-card">
                 <div class="sidebar-title">
                     <i class="bi bi-file-earmark-bar-graph"></i> Your Progress
