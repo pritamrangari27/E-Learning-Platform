@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Learning Platform - Master In-Demand Skills</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        :root {
+            --primary-dark: #0f172a;
+            --primary-mid: #1e293b;
+            --accent-blue: #0ea5e9;
+            --accent-purple: #7c3aed;
+            --text-light: #f1f5f9;
+            --text-muted: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+            color: var(--text-light);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #1a1f35 50%, #2d1b4e 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background animated elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* NAVBAR - Minimal Sticky */
+        .navbar {
+            background: rgba(15, 23, 42, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+            padding: 0.8rem 0 !important;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            flex-shrink: 0;
+            height: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-brand {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--accent-blue) !important;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar-brand i {
+            font-size: 1.5rem;
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .brand-name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            line-height: 1;
+        }
+
+        .brand-tagline {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            color: var(--text-muted) !important;
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin: 0 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-blue) !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .navbar-divider {
+            display: flex;
+            align-items: center;
+            height: 24px;
+            width: 1px;
+            background: rgba(14, 165, 233, 0.3);
+            margin: 0 20px;
+        }
+
+        .btn-nav {
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-nav-login {
+            background: rgba(14, 165, 233, 0.2);
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+        }
+
+        .btn-nav-login:hover {
+            background: var(--accent-blue);
+            color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-nav-register {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+            color: white;
+        }
+
+        .btn-nav-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);
+        }
+
+        .navbar-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* MAIN CONTENT - Non-scrollable container */
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+            z-index: 1;
+            padding: 30px 20px;
+            min-height: auto;
+        }
+
+        /* SPLIT SCREEN LAYOUT */
+        .split-screen {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            max-width: 1100px;
+            align-items: center;
+            height: auto;
+            max-height: none;
+        }
+
+        /* LEFT SIDE - Content */
+        .hero-content {
+            z-index: 2;
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-label {
+            display: inline-block;
+            background: rgba(14, 165, 233, 0.2);
+            border: 1px solid var(--accent-blue);
+            color: var(--accent-blue);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .hero-title {
+            font-size: clamp(1.8rem, 3vw, 2.8rem);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--text-light) 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            animation: slideInUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-cta {
+            padding: 11px 28px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-cta-primary {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #0284c7 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(14, 165, 233, 0.5);
+        }
+
+        .btn-cta-secondary {
+            background: transparent;
+            color: var(--accent-blue);
+            border: 2px solid var(--accent-blue);
+        }
+
+        .btn-cta-secondary:hover {
+            background: rgba(14, 165, 233, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* RIGHT SIDE - Visual showcase */
+        .hero-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Modal entrance animation */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Form element entrance animation */
+        @keyframes formElementSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal backdrop enhancement */
+        .modal.fade .modal-dialog {
+            animation: modalFadeIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .modal.show .modal-backdrop {
+            backdrop-filter: blur(5px);
+        }
+
+        .visual-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .visual-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .visual-text h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .visual-text p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(14, 165, 233, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--accent-blue);
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 3px;
+        }
+
+        /* MODALS */
+        .modal-content {
+            background: linear-gradient(135deg, var(--primary-mid) 0%, #2d1f47 100%);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 1px rgba(14, 165, 233, 0.5);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+            animation: formElementSlideIn 0.5s ease-out backwards;
+        }
+
+        .modal-title i {
+            margin-right: 10px;
+            color: var(--accent-blue);
+        }
+
+        .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.5;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+            animation: formElementSlideIn 0.5s ease-out 0.1s backwards;
+        }
+
+        .form-control, .form-select {
+            background: rgba(51, 65, 85, 0.5);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            color: var(--text-light);
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .form-control:hover, .form-select:hover {
+            border-color: rgba(14, 165, 233, 0.4);
+            background: rgba(51, 65, 85, 0.6);
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: rgba(51, 65, 85, 0.8);
+            border-color: var(--accent-blue);
+            color: var(--text-light);
+            box-shadow: 0 0 0 0.3rem rgba(14, 165, 233, 0.25), inset 0 0 20px rgba(14, 165, 233, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-control::placeholder {
+            color: rgba(203, 213, 225, 0.5);
+        }
+
+        .form-label {
+            color: var(--text-light);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            animation: formElementSlideIn 0.5s ease-out backwards;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            animation: formElementSlideIn 0.5s ease-out backwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.05s; }
+        .form-group:nth-child(2) { animation-delay: 0.1s; }
+        .form-group:nth-child(3) { animation-delay: 0.15s; }
+        .form-group:nth-child(4) { animation-delay: 0.2s; }
+        .form-group:nth-child(5) { animation-delay: 0.25s; }
+        .form-group:nth-child(6) { animation-delay: 0.3s; }
+        .form-group:nth-child(7) { animation-delay: 0.35s; }
+
+        .modal-footer {
+            border-top: 1px solid rgba(14, 165, 233, 0.1);
+            padding: 20px 30px;
+            gap: 10px;
+        }
+
+        .btn-modal {
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-modal::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-modal:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-modal-primary {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.2);
+            animation: formElementSlideIn 0.5s ease-out 0.4s backwards;
+        }
+
+        .btn-modal-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-modal-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-modal-secondary {
+            background: rgba(203, 213, 225, 0.1);
+            color: var(--text-muted);
+            border: 1px solid rgba(203, 213, 225, 0.2);
+        }
+
+        .btn-modal-secondary:hover {
+            background: rgba(203, 213, 225, 0.2);
+            color: var(--text-light);
+            transform: translateY(-2px);
+        }
+
+        .form-text {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Modal bottom text and link styling */
+        .modal-body > p {
+            animation: formElementSlideIn 0.5s ease-out 0.45s backwards;
+            margin-top: 0;
+        }
+
+        .modal-body .btn-link {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: inherit;
+        }
+
+        .modal-body .btn-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            transition: width 0.3s ease;
+        }
+
+        .modal-body .btn-link:hover::after {
+            width: 100%;
+        }
+
+        .role-options {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            animation: formElementSlideIn 0.5s ease-out 0.15s backwards;
+        }
+
+        .role-option {
+            flex: 1;
+        }
+
+        .role-option input[type="radio"] {
+            display: none;
+        }
+
+        .role-option label {
+            display: block;
+            padding: 12px 15px;
+            border: 2px solid rgba(14, 165, 233, 0.2);
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(51, 65, 85, 0.5);
+            color: var(--text-muted);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-option label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(14, 165, 233, 0.1);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .role-option label:hover {
+            border-color: rgba(14, 165, 233, 0.4);
+            background: rgba(51, 65, 85, 0.7);
+        }
+
+        .role-option label:hover::before {
+            left: 0;
+        }
+
+        .role-option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* Footer copyright */
+        .footer-copyright {
+            text-align: center;
+            padding: 15px 20px;
+            border-top: 1px solid rgba(14, 165, 233, 0.1);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        .footer-copyright a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-copyright a:hover {
+            color: var(--accent-purple);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .split-screen {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                max-height: none;
+            }
+
+            .hero-visual {
+                order: -1;
+            }
+
+            .visual-card {
+                max-width: 100%;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn-cta {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .navbar {
+                padding: 0.6rem 0 !important;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+
+            .brand-name {
+                font-size: 1.1rem;
+            }
+
+            .brand-tagline {
+                font-size: 0.6rem;
+            }
+
+            .nav-link {
+                font-size: 0.85rem;
+                margin: 0 8px;
+            }
+
+            .btn-nav {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+
+            .navbar-buttons {
+                gap: 8px;
+            }
+
+            .navbar-divider {
+                display: none !important;
+            }
+
+            .collapse.navbar-collapse {
+                margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px solid rgba(14, 165, 233, 0.1);
+            }
+
+            .navbar-toggler {
+                border: none;
+                box-shadow: none;
+                padding: 0.25rem 0.5rem;
+            }
+
+            .navbar-toggler-icon {
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(14, 165, 233, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 0.5rem 0 !important;
+            }
+
+            .navbar-brand {
+                font-size: 1rem;
+            }
+
+            .brand-name {
+                font-size: 1rem;
+            }
+
+            .brand-info {
+                margin-left: 8px;
+            }
+
+            .btn-nav span {
+                display: none;
+            }
+
+            .btn-nav {
+                padding: 6px 10px;
+                border-radius: 6px;
+            }
+
+            .btn-nav-login {
+                background: linear-gradient(135deg, rgba(14, 165, 233, 0.8) 0%, rgba(3, 102, 204, 0.8) 100%);
+            }
+
+            .btn-nav-register {
+                background: linear-gradient(135deg, rgba(16, 185, 129, 0.8) 0%, rgba(5, 150, 105, 0.8) 100%);
+            }
+
+            .navbar-buttons {
+                width: 100%;
+                justify-content: space-between;
+                display: flex;
+                gap: 8px;
+                margin-top: 10px;
+            }
+
+            .navbar-nav {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid px-4">
+            <!-- BRAND & LOGO -->
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-mortarboard-fill"></i>
+                <div class="brand-info">
+                    <div class="brand-name">E-Learning Platform</div>
+                    <div class="brand-tagline">Learn. Grow. Excel.</div>
+                </div>
+            </a>
+
+            <!-- TOGGLE BUTTON (Mobile) -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- NAVBAR CONTENT -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- CENTER SECTION (Reserved for future navigation) -->
+                <ul class="navbar-nav mx-auto">
+                    <!-- Navigation links can be added here -->
+                </ul>
+
+                <!-- DIVIDER -->
+                <div class="navbar-divider d-none d-lg-flex"></div>
+
+                <!-- RIGHT SECTION - Authentication Buttons -->
+                <div class="navbar-buttons">
+                    <button class="btn btn-nav btn-nav-login" data-bs-toggle="modal" data-bs-target="#loginModal" title="Sign in to your account">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span>Login</span>
+                    </button>
+                    <button class="btn btn-nav btn-nav-register" data-bs-toggle="modal" data-bs-target="#registerModal" title="Create a new account">
+                        <i class="bi bi-person-plus"></i>
+                        <span>Sign Up</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+        <div class="split-screen">
+            <!-- LEFT SIDE - HERO CONTENT -->
+            <div class="hero-content">
+                <span class="hero-label">
+                    <i class="bi bi-star-fill"></i> Premium Learning Platform
+                </span>
+                <h1 class="hero-title">Empower Your Future Through Expert-Led Learning</h1>
+                <p class="hero-subtitle">Master in-demand skills with our robust DBMS-powered platform. Learn from industry experts, build real-world projects, and accelerate your career growth—all in one place.</p>
+                
+                <div class="cta-buttons">
+                    <button class="btn btn-cta btn-cta-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
+                        <i class="bi bi-play-circle"></i> Get Started Free
+                    </button>
+                    <button class="btn btn-cta btn-cta-secondary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <i class="bi bi-arrow-right"></i> Explore Courses
+                    </button>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDE - VISUAL SHOWCASE -->
+            <div class="hero-visual">
+                <div class="visual-card">
+                    <div class="visual-icon">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                    <div class="visual-text">
+                        <h3>Transform Your Skills</h3>
+                        <p>Learn from industry professionals and unlock career opportunities that matter.</p>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">18+</div>
+                            <div class="stat-label">Courses</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">108+</div>
+                            <div class="stat-label">Lessons</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">5K+</div>
+                            <div class="stat-label">Learners</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-box-arrow-in-right"></i> Welcome Back
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ url_for('login') }}">
+                        <div class="form-group">
+                            <label class="form-label">Username or Email</label>
+                            <input type="text" class="form-control" name="username" placeholder="Enter your username" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-modal btn-modal-primary w-100 mt-3">
+                            <i class="bi bi-lock-fill"></i> Sign In
+                        </button>
+                    </form>
+                    <p class="text-center mt-3" style="color: var(--text-muted);">
+                        Don't have an account? 
+                        <button type="button" class="btn-link text-decoration-none" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#registerModal">
+                            <strong style="color: var(--accent-blue);">Create one</strong>
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTER MODAL -->
+    <div class="modal fade" id="registerModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-person-plus"></i> Join EduPro Today
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ url_for('register') }}">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" name="full_name" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" name="username" placeholder="johndoe" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" name="email" placeholder="john@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">I am a...</label>
+                            <div class="role-options">
+                                <div class="role-option">
+                                    <input type="radio" id="role_student" name="role" value="student" required>
+                                    <label for="role_student">
+                                        <i class="bi bi-book"></i> Student
+                                    </label>
+                                </div>
+                                <div class="role-option">
+                                    <input type="radio" id="role_instructor" name="role" value="instructor" required>
+                                    <label for="role_instructor">
+                                        <i class="bi bi-person-workspace"></i> Instructor
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="Create a strong password" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" name="confirm_password" placeholder="Confirm your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-modal btn-modal-primary w-100 mt-3">
+                            <i class="bi bi-check-circle"></i> Create Account
+                        </button>
+                    </form>
+                    <p class="text-center mt-3" style="color: var(--text-muted);">
+                        Already have an account? 
+                        <button type="button" class="btn-link text-decoration-none" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <strong style="color: var(--accent-blue);">Sign in</strong>
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</html>
+</head>
+<body>
+   
+    <!-- FOOTER -->
+    <footer class="footer-copyright">
+        <p>&copy; 2025-2026 E-Learning Platform. All rights reserved.</p>
+    </footer>
+
+    <!-- LOGIN MODAL -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ url_for('login') }}" id="loginForm">
+                        <div class="modal-form-group">
+                            <label for="loginUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="loginUsername" name="username" 
+                                   placeholder="Enter your username" required>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" name="password"
+                                   placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-box-arrow-in-right"></i> Sign In
+                        </button>
+                    </form>
+                    <hr>
+                    <p class="text-center" style="color: var(--text-muted);">Don't have an account? 
+                        <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#registerModal" style="color: var(--accent-blue); font-weight: 600;">Sign up here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTER MODAL -->
+    <div class="modal fade" id="registerModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-person-plus"></i> Create Account
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ url_for('register') }}" id="registerForm">
+                        <div class="modal-form-group">
+                            <label for="registerFullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="registerFullName" name="full_name"
+                                   placeholder="Your full name" required>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="registerUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="registerUsername" name="username"
+                                   placeholder="Choose a username" required>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="registerEmail" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="registerEmail" name="email"
+                                   placeholder="your@email.com" required>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="registerRole" class="form-label">I am a:</label>
+                            <select class="form-select" id="registerRole" name="role" required>
+                                <option value="student" selected>Student</option>
+                                <option value="instructor">Instructor</option>
+                            </select>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="registerPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="registerPassword" name="password"
+                                   placeholder="Create a password" required>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="registerConfirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="registerConfirmPassword" name="confirm_password"
+                                   placeholder="Confirm password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-person-plus"></i> Create Account
+                        </button>
+                    </form>
+                    <hr>
+                    <p class="text-center" style="color: var(--text-muted);">Already have an account? 
+                        <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#loginModal" style="color: var(--accent-blue); font-weight: 600;">Sign in here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Handle form submission and modal dismissal
+        document.getElementById('loginForm').addEventListener('submit', function() {
+            setTimeout(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                if (modal) modal.hide();
+            }, 100);
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function() {
+            setTimeout(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+                if (modal) modal.hide();
+            }, 100);
+        });
+    </script>
+</body>
+</html>

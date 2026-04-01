@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Create Course - E-Learning Platform{% endblock %}
+
+{% set back_button = {'url': url_for('dashboard'), 'label': 'Back to Dashboard'} %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg">
+            <div class="card-body p-5">
+                <div class="mb-4">
+                    <h1><i class="bi bi-plus-circle"></i> Create New Course</h1>
+                    <p class="text-muted">Design and structure your course</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('create_course') }}" novalidate>
+                    <div class="mb-4">
+                        <label for="title" class="form-label">Course Title</label>
+                        <input type="text" class="form-control form-control-lg" id="title" name="title" 
+                               placeholder="e.g., Introduction to Web Development" required>
+                        <small class="text-muted">Make it clear and descriptive</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select form-select-lg" id="category" name="category" required>
+                            <option value="">-- Select Category --</option>
+                            <option value="Programming">Programming</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="Mobile Development">Mobile Development</option>
+                            <option value="Data Science">Data Science</option>
+                            <option value="Cloud Computing">Cloud Computing</option>
+                            <option value="Cybersecurity">Cybersecurity</option>
+                            <option value="Design">Design</option>
+                            <option value="DevOps">DevOps</option>
+                            <option value="AI/ML">AI/ML</option>
+                            <option value="Business">Business</option>
+                            <option value="Business">Business</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="description" class="form-label">Course Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="6"
+                                  placeholder="Write a detailed description of your course. What will students learn? What are the prerequisites?"
+                                  required></textarea>
+                        <small class="text-muted">This description will help students decide if this course is right for them</small>
+                    </div>
+
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-check-circle"></i> Create Course
+                        </button>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+
+                <hr class="my-4">
+
+                <div class="alert alert-info py-3" role="alert">
+                    <h6 class="alert-heading">
+                        <i class="bi bi-lightbulb"></i> What comes next?
+                    </h6>
+                    <p class="mb-0">
+                        After creating your course, you can add lessons to it. Each lesson will contain the actual course content that your students will learn.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

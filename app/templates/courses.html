@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Courses - E-Learning Platform{% endblock %}
+
+{% set back_button = {'url': url_for('dashboard'), 'label': 'Back to Dashboard'} %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>Browse All Courses</h1>
+        <p class="text-muted">Explore and enroll in courses that interest you</p>
+    </div>
+</div>
+
+<!-- Search Bar -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <input type="text" id="courseSearchInput" class="form-control" placeholder="Search courses..." autocomplete="off">
+                <small class="text-muted" style="display: block; margin-top: 0.5rem;">Search by course name, instructor, or category</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Results Info -->
+<div id="searchResultsInfo" style="display: none; padding: 1rem; background: #f0f7ff; border-radius: 8px; border-left: 3px solid #0066cc; margin-bottom: 1.5rem;">
+    <i class="bi bi-info-circle"></i> <span id="resultsCount">0</span> course(s) found matching your search.
+</div>
+
+<!-- No Results Message -->
+<div id="noResultsMessage" style="display: none; text-align: center; padding: 3rem 1rem;">
+    <i class="bi bi-search" style="font-size: 3rem; color: #ccc;"></i>
+    <p style="color: #666; margin-top: 1rem;">No courses found matching "<span id="searchedTerm"></span>". Try searching with different keywords.</p>
+</div>
+
+<!-- Courses Grid -->
+{% if courses %}
+    <div class="courses-horizontal-container" id="coursesContainer">
+        {% for course in courses %}
+            <div class="course-card-horizontal" data-course-name="{{ course.title | lower }}" data-course-instructor="{{ course.instructor.full_name | lower }}" data-course-category="{{ course.category | lower }}">
+                <div class="course-card-horizontal-body">
+                    <!-- Title -->
+                    <h5 class="course-card-horizontal-title">{{ course.title }}</h5>
+                    
+                    <!-- Category Badge -->
+                    <span class="course-card-horizontal-category">{{ course.category }}</span>
+                    
+                    <!-- Stats -->
+                    <div class="course-card-horizontal-info">
+                        <div class="course-card-horizontal-stat">
+                            <i class="bi bi-people-fill" style="color: var(--primary-color);"></i>
+                            <strong>{{ course.enrollments|length }}</strong> students
+                        </div>
+                        <div class="course-card-horizontal-stat">
+                            <i class="bi bi-file-text" style="color: #28a745;"></i>
+                            <strong>{{ course.lessons|length }}</strong> lessons
+                        </div>
+                    </div>
+                    
+                    <!-- Instructor -->
+                    <div class="course-card-horizontal-instructor">
+                        <strong>{{ course.instructor.full_name }}</strong>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: auto;">
+                        {% if course.id in enrolled_course_ids %}
+                            <a href="{{ url_for('view_course', course_id=course.id) }}" class="course-card-horizontal-button btn-continue">
+                                <i class="bi bi-play-circle"></i> Continue
+                            </a>
+                            <button class="course-card-horizontal-button" style="background: #0066cc; color: white;" data-bs-toggle="modal" data-bs-target="#courseDetailModal{{ course.id }}">
+                                <i class="bi bi-info-circle"></i> Details
+                            </button>
+                        {% else %}
+                            <button class="course-card-horizontal-button btn-explore" data-bs-toggle="modal" data-bs-target="#courseModal{{ course.id }}">
+                                <i class="bi bi-eye"></i> Explore
+                            </button>
+                            <form method="POST" action="{{ url_for('enroll', course_id=course.id) }}" style="display: contents;">
+                                <button type="submit" class="course-card-horizontal-button btn-continue">
+                                    <i class="bi bi-plus-circle"></i> Enroll
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Course Detail Modal (for non-enrolled courses) -->
+            {% if course.id not in enrolled_course_ids %}
+                <div class="modal fade" id="courseModal{{ course.id }}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-book-fill"></i> Course Details
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body modal-body-course">
+                                <!-- Header -->
+                                <div class="course-modal-header-section">
+                                    <div>
+                                        <h3 class="course-modal-title">{{ course.title }}</h3>
+                                    </div>
+                                    <span class="course-modal-category">{{ course.category }}</span>
+                                </div>
+                                
+                                <!-- Description -->
+                                <p class="course-modal-description">{{ course.description }}</p>
+                                
+                                <!-- Course Stats -->
+                                <div class="course-modal-info-grid">
+                                    <div class="course-modal-info-item">
+                                        <i class="bi bi-people-fill"></i>
+                                        <div>
+                                            <span class="course-modal-info-label">Total Students</span>
+                                            <span class="course-modal-info-value">{{ course.enrollments|length }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="course-modal-info-item">
+                                        <i class="bi bi-file-text"></i>
+                                        <div>
+                                            <span class="course-modal-info-label">Total Lessons</span>
+                                            <span class="course-modal-info-value">{{ course.lessons|length }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="course-modal-info-item">
+                                        <i class="bi bi-calendar-event"></i>
+                                        <div>
+                                            <span class="course-modal-info-label">Created</span>
+                                            <span class="course-modal-info-value">{{ course.created_at.strftime('%b %y') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="course-modal-info-item">
+                                        <i class="bi bi-tag"></i>
+                                        <div>
+                                            <span class="course-modal-info-label">Category</span>
+                                            <span class="course-modal-info-value">{{ course.category }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Instructor Info -->
+                                <div class="course-modal-instructor-section">
+                                    <span class="course-modal-instructor-label">
+                                        <i class="bi bi-person-fill"></i> Course Instructor
+                                    </span>
+                                    <span class="course-modal-instructor-name">{{ course.instructor.full_name }}</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <form method="POST" action="{{ url_for('enroll', course_id=course.id) }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle"></i> Enroll Now
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Enrolled Course Detail Modal -->
+                <div class="modal fade" id="courseDetailModal{{ course.id }}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-book-fill"></i> Course Details
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body modal-body-course">
+                                <!-- Header -->
+                                <div class="course-modal-header-section">
+                                    <div>
+                                        <h3 class="course-modal-title">{{ course.title }}</h3>
+                                    </div>
+                                    <span class="course-modal-category">{{ course.category }}</span>
+                                </div>
+                                
+                                <!-- Description -->
+                                <p class="course-modal-description">{{ course.description }}</p>
+                                
+                                <!-- Progress Section -->
+                                {% set enrollment = course.enrollments|selectattr('student_id', 'equalto', session.user_id)|first %}
+                                {% if enrollment %}
+                                    <div style="padding: 1rem; background: linear-gradient(135deg, #f0f7ff 0%, #e7f1ff 100%); border-radius: 8px; border-left: 3px solid var(--primary-color); margin-bottom: 1.5rem;">
+                                        <div style="margin-bottom: 0.75rem;">
+                                            <div style="font-size: 0.75rem; color: var(--primary-color); text-transform: uppercase; letter-spacing: 0.3px; font-weight: 700; margin-bottom: 0.5rem;">Your Progress</div>
+                                            <div style="font-size: 1.5rem; font-weight: 900; color: var(--primary-color); margin-bottom: 0.75rem;">{{ enrollment.progress|int }}% Complete</div>
+                                        </div>
+                                        <div class="course-card-horizontal-progress" style="height: 8px;">
+                                            <div class="course-card-horizontal-progress-bar" style="width: {{ enrollment.progress|int }}%;"></div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Course Stats -->
+                                <div class="course-modal-info-grid">
+                                    <div class="course-modal-info-item">
+                                        <i class="bi bi-people-fill"></i>
+                                        <div>
+                                            <span class="course-modal-info-label">Total Students</span>
+                                            <span class="course-modal-info-value">{{ course.enrollments|length }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="course-modal-info-item">
+                                        <i class="bi bi-file-text"></i>
+                                        <div>
+                                            <span class="course-modal-info-label">Total Lessons</span>
+                                            <span class="course-modal-info-value">{{ course.lessons|length }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="course-modal-info-item">
+                                        <i class="bi bi-calendar-event"></i>
+                                        <div>
+                                            <span class="course-modal-info-label">Created</span>
+                                            <span class="course-modal-info-value">{{ course.created_at.strftime('%b %y') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="course-modal-info-item">
+                                        <i class="bi bi-tag"></i>
+                                        <div>
+                                            <span class="course-modal-info-label">Category</span>
+                                            <span class="course-modal-info-value">{{ course.category }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Instructor Info -->
+                                <div class="course-modal-instructor-section">
+                                    <span class="course-modal-instructor-label">
+                                        <i class="bi bi-person-fill"></i> Course Instructor
+                                    </span>
+                                    <span class="course-modal-instructor-name">{{ course.instructor.full_name }}</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <a href="{{ url_for('view_course', course_id=course.id) }}" class="btn btn-primary">
+                                    <i class="bi bi-play-circle"></i> Continue Learning
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-warning border-0" role="alert" style="background: linear-gradient(135deg, #fff8e7 0%, #fffbf0 100%); border-left: 4px solid var(--warning-color);">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-exclamation-triangle" style="font-size: 1.5rem; color: var(--warning-color);"></i>
+            <div>
+                <strong style="color: #856404;">No courses available</strong> 
+                <span style="color: #666;">Please check back later for new courses.</span>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Real-time Search Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('courseSearchInput');
+        const coursesContainer = document.getElementById('coursesContainer');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        const searchResultsInfo = document.getElementById('searchResultsInfo');
+        const resultsCount = document.getElementById('resultsCount');
+        const searchedTerm = document.getElementById('searchedTerm');
+        
+        if (!searchInput) return;
+        
+        // Real-time search on input
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (!coursesContainer) return;
+            
+            const courseCards = coursesContainer.querySelectorAll('.course-card-horizontal');
+            let visibleCount = 0;
+            
+            courseCards.forEach(card => {
+                const courseName = card.dataset.courseName || '';
+                const courseInstructor = card.dataset.courseInstructor || '';
+                const courseCategory = card.dataset.courseCategory || '';
+                
+                // Check if search term matches course name, instructor, or category
+                const matches = courseName.includes(searchTerm) || 
+                               courseInstructor.includes(searchTerm) || 
+                               courseCategory.includes(searchTerm);
+                
+                if (searchTerm === '') {
+                    // Show all courses when search is empty
+                    card.style.display = '';
+                    visibleCount++;
+                } else if (matches) {
+                    // Show matching courses
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    // Hide non-matching courses
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show/hide results info
+            if (searchTerm === '') {
+                searchResultsInfo.style.display = 'none';
+                noResultsMessage.style.display = 'none';
+            } else {
+                if (visibleCount === 0) {
+                    searchResultsInfo.style.display = 'none';
+                    noResultsMessage.style.display = 'block';
+                    searchedTerm.textContent = searchTerm;
+                } else {
+                    searchResultsInfo.style.display = 'block';
+                    noResultsMessage.style.display = 'none';
+                    resultsCount.textContent = visibleCount;
+                }
+            }
+        });
+        
+        // Clear search on page load (if user refreshes)
+        searchInput.value = '';
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,816 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }} - E-Learning Platform{% endblock %}
+
+{% set back_button = {'url': url_for('view_courses'), 'label': 'Back to Courses'} %}
+
+{% block content %}
+<style>
+    /* Course Page Animations */
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Course Header */
+    .course-hero {
+        background: linear-gradient(135deg, #0066cc 0%, #0ea5e9 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 3rem;
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+        animation: fadeInDown 0.6s ease-out;
+    }
+
+    .course-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .course-hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .course-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .course-description {
+        font-size: 1.1rem;
+        opacity: 0.95;
+        max-width: 70%;
+        margin-bottom: 2rem;
+    }
+
+    .course-badge-group {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .course-badge {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Progress Bar Enhanced */
+    .progress-container {
+        margin-top: 2rem;
+    }
+
+    .progress-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+
+    .progress-label {
+        font-weight: 600;
+        color: white;
+    }
+
+    .progress-percent {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .progress {
+        height: 8px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, #10b981, #34d399);
+        transition: width 0.5s ease;
+        border-radius: 10px;
+    }
+
+    /* Enroll Button */
+    .enroll-btn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border: none;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .enroll-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        color: white;
+    }
+
+    /* Enrolled Badge */
+    .enrolled-badge {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Main Content Area */
+    .lessons-section {
+        animation: fadeInUp 0.6s ease-out 0.2s backwards;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1f2937;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .section-title i {
+        color: #0066cc;
+        font-size: 2rem;
+    }
+
+    .section-title-badge {
+        background-color: #dbeafe;
+        color: #0066cc;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    /* Lesson Cards */
+    .lesson-item {
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        margin-bottom: 1.2rem;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        animation: fadeInUp 0.5s ease-out backwards;
+    }
+
+    .lesson-item:nth-child(1) { animation-delay: 0.1s; }
+    .lesson-item:nth-child(2) { animation-delay: 0.2s; }
+    .lesson-item:nth-child(3) { animation-delay: 0.3s; }
+    .lesson-item:nth-child(4) { animation-delay: 0.4s; }
+    .lesson-item:nth-child(5) { animation-delay: 0.5s; }
+    .lesson-item:nth-child(6) { animation-delay: 0.6s; }
+
+    .lesson-item:hover {
+        border-color: #0066cc;
+        box-shadow: 0 8px 24px rgba(0, 102, 204, 0.12);
+        transform: translateY(-4px);
+    }
+
+    .lesson-header {
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        transition: background 0.3s ease;
+    }
+
+    .lesson-item:hover .lesson-header {
+        background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+    }
+
+    .lesson-number {
+        background: linear-gradient(135deg, #0066cc 0%, #0ea5e9 100%);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+
+    .lesson-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1f2937;
+        flex: 1;
+        margin: 0;
+    }
+
+    .lesson-duration {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        white-space: nowrap;
+    }
+
+    .lesson-body {
+        padding: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        display: none;
+    }
+
+    .lesson-item.active .lesson-body {
+        display: block;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            max-height: 0;
+        }
+        to {
+            opacity: 1;
+            max-height: 500px;
+        }
+    }
+
+    .lesson-content {
+        color: #4b5563;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+    }
+
+    .lesson-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        margin-bottom: 1.5rem;
+    }
+
+    .lesson-meta-item small {
+        display: block;
+        color: #9ca3af;
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .lesson-meta-item p {
+        margin: 0;
+        color: #1f2937;
+        font-weight: 500;
+    }
+
+    .start-lesson-btn {
+        background: linear-gradient(135deg, #0066cc 0%, #0ea5e9 100%);
+        color: white;
+        border: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .start-lesson-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 102, 204, 0.3);
+        color: white;
+    }
+
+    /* Overview Stats */
+    .course-overview {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-top: 3rem;
+        animation: scaleIn 0.5s ease-out;
+    }
+
+    .overview-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .overview-title i {
+        color: #0066cc;
+    }
+
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #0066cc 0%, #0ea5e9 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value.green {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-value.orange {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: #9ca3af;
+        font-weight: 500;
+    }
+
+    /* Sidebar */
+    .sidebar-card {
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        animation: slideInRight 0.6s ease-out 0.2s backwards;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-card:hover {
+        border-color: #0066cc;
+        box-shadow: 0 8px 24px rgba(0, 102, 204, 0.1);
+    }
+
+    .sidebar-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .sidebar-title i {
+        color: #0066cc;
+        font-size: 1.3rem;
+    }
+
+    .progress-info {
+        margin-bottom: 1.5rem;
+    }
+
+    .progress-info-label {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+    }
+
+    .progress-info-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .progress-small {
+        height: 6px;
+        background-color: #e5e7eb;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 0.75rem;
+    }
+
+    .progress-small .progress-bar {
+        background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    .completed-badge {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .completed-badge i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .sidebar-stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .sidebar-stat:last-child {
+        border-bottom: none;
+    }
+
+    .sidebar-stat-label {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+
+    .sidebar-stat-value {
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .unenroll-btn {
+        width: 100%;
+        background: #fee2e2;
+        color: #dc2626;
+        border: 2px solid #fecaca;
+        padding: 0.6rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .unenroll-btn:hover {
+        background: #dc2626;
+        color: white;
+        border-color: #dc2626;
+    }
+
+    /* Sticky Sidebar */
+    .sidebar-wrapper {
+        position: sticky;
+        top: 100px;
+    }
+
+    .divider {
+        height: 1px;
+        background: #e5e7eb;
+        margin: 1rem 0;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #d1d5db;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: #9ca3af;
+    }
+</style>
+
+<!-- Course Hero Header -->
+<div class="course-hero">
+    <div class="course-hero-content">
+        <h1 class="course-title">{{ course.title }}</h1>
+        <p class="course-description">{{ course.description }}</p>
+
+        <div class="course-badge-group">
+            <div class="course-badge">
+                <i class="bi bi-person-circle"></i>
+                {{ course.instructor.full_name }}
+            </div>
+            <div class="course-badge">
+                <i class="bi bi-tag"></i>
+                {{ course.category }}
+            </div>
+            <div class="course-badge">
+                <i class="bi bi-book"></i>
+                {{ lessons|length }} Lessons
+            </div>
+            <div class="course-badge">
+                <i class="bi bi-people"></i>
+                {{ course.enrollments|length }} Students
+            </div>
+
+            {% if enrollment %}
+                <div class="enrolled-badge">
+                    <i class="bi bi-check-circle"></i> Enrolled
+                </div>
+            {% endif %}
+        </div>
+
+        {% if enrollment %}
+        <div class="progress-container">
+            <div class="progress-wrapper">
+                <span class="progress-label">Course Progress</span>
+                <span class="progress-percent">{{ enrollment.progress|int }}%</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" 
+                     style="width: {{ enrollment.progress|int }}%;" 
+                     aria-valuenow="{{ enrollment.progress|int }}" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div style="margin-top: 1.5rem;">
+            <form method="POST" action="{{ url_for('enroll', course_id=course.id) }}" style="display: inline;">
+                <button type="submit" class="enroll-btn">
+                    <i class="bi bi-plus-circle"></i> Enroll Now
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="row">
+    <!-- Lessons Section -->
+    <div class="col-lg-8 lessons-section">
+        <div class="section-title">
+            <i class="bi bi-file-earmark-text"></i>
+            Course Lessons
+            <span class="section-title-badge">{{ lessons|length }} lessons</span>
+        </div>
+
+        {% if lessons %}
+            {% for lesson in lessons %}
+                <div class="lesson-item {% if loop.first %}active{% endif %}">
+                    <div class="lesson-header" onclick="toggleLesson(this)">
+                        <div style="display: flex; align-items: center; flex: 1;">
+                            <div class="lesson-number">{{ lesson.lesson_number }}</div>
+                            <h3 class="lesson-title">{{ lesson.title }}</h3>
+                        </div>
+                        <div class="lesson-duration">
+                            <i class="bi bi-clock"></i> {{ lesson.duration_minutes }} min
+                        </div>
+                    </div>
+
+                    <div class="lesson-body">
+                        <div class="lesson-content">
+                            <p>{{ lesson.content }}</p>
+                        </div>
+
+                        <div class="lesson-meta">
+                            <div class="lesson-meta-item">
+                                <small>Lesson Number</small>
+                                <p>{{ lesson.lesson_number }}</p>
+                            </div>
+                            <div class="lesson-meta-item">
+                                <small>Duration</small>
+                                <p>{{ lesson.duration_minutes }} minutes</p>
+                            </div>
+                        </div>
+
+                        <a href="{{ url_for('view_lesson', lesson_id=lesson.id) }}" class="btn start-lesson-btn">
+                            <i class="bi bi-play-circle"></i> Start Lesson
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <!-- Course Overview Stats -->
+            <div class="course-overview">
+                <div class="overview-title">
+                    <i class="bi bi-graph-up"></i> Course Overview
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">{{ lessons|length }}</div>
+                        <div class="stat-label">Total Lessons</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value green">
+                            {% set total_duration = lessons|map(attribute='duration_minutes')|sum %}
+                            {{ total_duration }}
+                        </div>
+                        <div class="stat-label">Total Minutes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value orange">{{ course.enrollments|length }}</div>
+                        <div class="stat-label">Students Enrolled</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ course.category }}</div>
+                        <div class="stat-label">Category</div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <h3>No Lessons Yet</h3>
+                <p>This course doesn't have any lessons available yet. Check back soon!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <div class="sidebar-wrapper">
+            <!-- Progress Card -->
+            {% if enrollment %}
+            <div class="sidebar-card">
+                <div class="sidebar-title">
+                    <i class="bi bi-file-earmark-bar-graph"></i> Your Progress
+                </div>
+
+                <div class="progress-info">
+                    <div class="progress-info-label">Completion Status</div>
+                    <div class="progress-info-value">{{ enrollment.progress|int }}%</div>
+                    <div class="progress-small">
+                        <div class="progress-bar" style="width: {{ enrollment.progress|int }}%;"></div>
+                    </div>
+                </div>
+
+                {% if enrollment.is_completed %}
+                <div class="completed-badge">
+                    <i class="bi bi-check-circle"></i>
+                    <div style="font-weight: 700;">Completed!</div>
+                    <small style="opacity: 0.9;">Finished on {{ enrollment.completed_at.strftime('%B %d, %Y') }}</small>
+                </div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('unenroll', course_id=course.id) }}">
+                    <button type="submit" class="unenroll-btn">
+                        <i class="bi bi-x-circle"></i> Unenroll Course
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+            <!-- Instructor Card -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">
+                    <i class="bi bi-person"></i> Instructor
+                </div>
+                <p style="margin: 0; font-weight: 600; color: #1f2937;">{{ course.instructor.full_name }}</p>
+                <small style="color: #6b7280;">{{ course.instructor.email }}</small>
+            </div>
+
+            <!-- Statistics Card -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">
+                    <i class="bi bi-bar-chart"></i> Statistics
+                </div>
+
+                <div class="sidebar-stat">
+                    <span class="sidebar-stat-label"><i class="bi bi-people"></i> Total Students</span>
+                    <span class="sidebar-stat-value">{{ course.enrollments|length }}</span>
+                </div>
+                <div class="sidebar-stat">
+                    <span class="sidebar-stat-label"><i class="bi bi-file-text"></i> Total Lessons</span>
+                    <span class="sidebar-stat-value">{{ lessons|length }}</span>
+                </div>
+                <div class="sidebar-stat">
+                    <span class="sidebar-stat-label"><i class="bi bi-clock"></i> Total Duration</span>
+                    <span class="sidebar-stat-value">
+                        {% set total_duration = lessons|map(attribute='duration_minutes')|sum %}
+                        {{ total_duration }} min
+                    </span>
+                </div>
+            </div>
+
+            <!-- Course Info Card -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">
+                    <i class="bi bi-info-circle"></i> Course Info
+                </div>
+                <small style="color: #6b7280; display: block; margin-bottom: 0.5rem;">
+                    <strong>Created:</strong> {{ course.created_at.strftime('%B %d, %Y') }}
+                </small>
+                <small style="color: #6b7280; display: block;">
+                    <strong>Updated:</strong> {{ course.updated_at.strftime('%B %d, %Y') }}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleLesson(header) {
+        const lessonItem = header.parentElement;
+        const wasActive = lessonItem.classList.contains('active');
+
+        // Close all lessons
+        document.querySelectorAll('.lesson-item').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        // Open clicked lesson if it wasn't active
+        if (!wasActive) {
+            lessonItem.classList.add('active');
+        }
+    }
+</script>
+{% endblock %}

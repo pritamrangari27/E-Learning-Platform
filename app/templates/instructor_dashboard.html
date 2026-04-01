@@ -1,0 +1,566 @@
+{% extends "base.html" %}
+
+{% block title %}Instructor Dashboard - E-Learning Platform{% endblock %}
+
+{% block content %}
+<style>
+    /* Dashboard Styles */
+    .instructor-header {
+        margin-bottom: 2rem;
+        animation: slideDown 0.5s ease-out;
+    }
+
+    .instructor-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #0066cc 0%, #0ea5e9 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .instructor-header .subtitle {
+        color: #6b7280;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+    }
+
+    .create-course-btn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .create-course-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        color: white;
+    }
+
+    /* Stat Cards */
+    .stat-card {
+        background: white;
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        animation: cardFade 0.5s ease-out backwards;
+    }
+
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes cardFade {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #0066cc, #0ea5e9);
+    }
+
+    .stat-card:nth-child(2)::before {
+        background: linear-gradient(90deg, #10b981, #059669);
+    }
+
+    .stat-card:nth-child(3)::before {
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+    }
+
+    .stat-card:nth-child(4)::before {
+        background: linear-gradient(90deg, #3b82f6, #2563eb);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #0066cc, #0ea5e9);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-card:nth-child(2) .stat-icon {
+        background: linear-gradient(135deg, #10b981, #059669);
+        -webkit-background-clip: text;
+    }
+
+    .stat-card:nth-child(3) .stat-icon {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        -webkit-background-clip: text;
+    }
+
+    .stat-card:nth-child(4) .stat-icon {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        -webkit-background-clip: text;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0.5rem 0;
+    }
+
+    .stat-label {
+        color: #6b7280;
+        font-weight: 500;
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    /* Course Cards */
+    .course-card-modern {
+        background: white;
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .course-card-modern:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    .course-header {
+        background: linear-gradient(135deg, #0066cc 0%, #0ea5e9 100%);
+        color: white;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .course-card-modern:nth-child(2n) .course-header {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .course-card-modern:nth-child(3n) .course-header {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    .course-header::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -50px;
+        width: 100px;
+        height: 100px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    .course-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .course-category {
+        font-size: 0.85rem;
+        opacity: 0.9;
+        margin-top: 0.5rem;
+    }
+
+    .course-body {
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .course-description {
+        color: #6b7280;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+        flex: 1;
+    }
+
+    .course-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .course-stat-item {
+        text-align: center;
+    }
+
+    .course-stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .course-stat-label {
+        font-size: 0.8rem;
+        color: #9ca3af;
+        margin-top: 0.25rem;
+    }
+
+    .course-progress-bar {
+        margin-bottom: 0.75rem;
+    }
+
+    .course-progress-bar label {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-bottom: 0.25rem;
+        display: block;
+    }
+
+    .progress {
+        height: 6px;
+        background-color: #e5e7eb;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, #0ea5e9, #0066cc);
+        height: 100%;
+    }
+
+    .course-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .course-actions .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-view {
+        background-color: #e0f2fe;
+        color: #0066cc;
+        font-weight: 600;
+    }
+
+    .btn-view:hover {
+        background-color: #0ea5e9;
+        color: white;
+    }
+
+    .btn-add-lesson {
+        background-color: #dcfce7;
+        color: #10b981;
+        font-weight: 600;
+    }
+
+    .btn-add-lesson:hover {
+        background-color: #10b981;
+        color: white;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .section-title i {
+        color: #0066cc;
+        font-size: 1.8rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        border-radius: 12px;
+        border: 2px dashed #d1d5db;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #d1d5db;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: #9ca3af;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-box {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .search-box input {
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+        outline: none;
+        border-color: #0066cc;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    }
+
+    .search-box i {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+    }
+</style>
+
+<!-- Header Section -->
+<div class="instructor-header">
+    <div class="d-flex justify-content-between align-items-start gap-3">
+        <div>
+            <h1><i class="bi bi-person-workspace"></i> Instructor Dashboard</h1>
+            <p class="subtitle">Welcome, {{ user.full_name }}! Manage and grow your courses</p>
+        </div>
+        <a href="{{ url_for('create_course') }}" class="btn btn-success create-course-btn">
+            <i class="bi bi-plus-circle"></i> Create New Course
+        </a>
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="row mb-5">
+    <div class="col-md-6 col-lg-3">
+        <div class="card stat-card text-center">
+            <div class="card-body py-4">
+                <i class="bi bi-book stat-icon"></i>
+                <div class="stat-value">{{ courses|length }}</div>
+                <p class="stat-label">Total Courses</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card stat-card text-center">
+            <div class="card-body py-4">
+                <i class="bi bi-people stat-icon"></i>
+                <div class="stat-value" id="total_students">0</div>
+                <p class="stat-label">Total Students</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card stat-card text-center">
+            <div class="card-body py-4">
+                <i class="bi bi-file-text stat-icon"></i>
+                <div class="stat-value" id="total_lessons">0</div>
+                <p class="stat-label">Total Lessons</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card stat-card text-center">
+            <div class="card-body py-4">
+                <i class="bi bi-check-circle stat-icon"></i>
+                <div class="stat-value" id="completed_students">0</div>
+                <p class="stat-label">Completed Courses</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- My Courses Section -->
+<div class="mb-5">
+    <div class="section-title">
+        <i class="bi bi-collection"></i> My Courses
+    </div>
+
+    {% if courses %}
+        <!-- Search Box -->
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" id="courseSearch" class="form-control" 
+                   placeholder="Search courses by title or category..." 
+                   autocomplete="off">
+        </div>
+
+        <!-- Courses Grid -->
+        <div class="row g-4" id="coursesGrid">
+            {% for course in courses %}
+                <div class="col-md-6 col-lg-4 course-item" 
+                     data-course-title="{{ course.title | lower }}"
+                     data-course-category="{{ course.category | lower }}">
+                    <div class="course-card-modern">
+                        <!-- Header -->
+                        <div class="course-header">
+                            <h5 class="course-title">{{ course.title }}</h5>
+                            <div class="course-category">
+                                <i class="bi bi-tag"></i> {{ course.category }}
+                            </div>
+                        </div>
+
+                        <!-- Body -->
+                        <div class="course-body">
+                            <!-- Description -->
+                            <p class="course-description">
+                                {{ course.description[:80] }}{% if course.description|length > 80 %}...{% endif %}
+                            </p>
+
+                            <!-- Stats -->
+                            <div class="course-stats">
+                                <div class="course-stat-item">
+                                    <div class="course-stat-number">{{ course.lessons|length }}</div>
+                                    <div class="course-stat-label">Lessons</div>
+                                </div>
+                                <div class="course-stat-item">
+                                    <div class="course-stat-number">{{ course.enrollments|length }}</div>
+                                    <div class="course-stat-label">Students</div>
+                                </div>
+                            </div>
+
+                            <!-- Completion Rate -->
+                            {% set completed = course.enrollments | selectattr('is_completed') | list | length %}
+                            {% set total = course.enrollments | length %}
+                            {% set completion_rate = (completed / total * 100) if total > 0 else 0 %}
+                            <div class="course-progress-bar">
+                                <label>Completion Rate: <strong>{{ "%.0f"|format(completion_rate) }}%</strong></label>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: {{ completion_rate }}%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Status Badge -->
+                            <div style="margin-bottom: 1rem;">
+                                {% if course.is_active %}
+                                    <span class="badge" style="background-color: #dcfce7; color: #059669; font-size: 0.8rem;">
+                                        <i class="bi bi-circle-fill"></i> Active
+                                    </span>
+                                {% else %}
+                                    <span class="badge" style="background-color: #f3f4f6; color: #6b7280; font-size: 0.8rem;">
+                                        <i class="bi bi-circle-fill"></i> Inactive
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="course-actions">
+                                <a href="{{ url_for('view_course', course_id=course.id) }}" 
+                                   class="btn btn-view">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                <a href="{{ url_for('add_lesson', course_id=course.id) }}" 
+                                   class="btn btn-add-lesson">
+                                    <i class="bi bi-plus"></i> Add Lesson
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h3>No Courses Yet</h3>
+            <p>Get started by creating your first course and share your knowledge with students</p>
+            <a href="{{ url_for('create_course') }}" class="btn btn-success" style="padding: 0.6rem 1.5rem; font-weight: 600;">
+                <i class="bi bi-plus-circle"></i> Create Your First Course
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    // Calculate statistics
+    document.addEventListener('DOMContentLoaded', function() {
+        {% set total_students = 0 %}
+        {% set total_lessons = 0 %}
+        {% set completed_students = 0 %}
+        {% for course in courses %}
+            {% set total_students = total_students + course.enrollments|length %}
+            {% set total_lessons = total_lessons + course.lessons|length %}
+            {% for enrollment in course.enrollments %}
+                {% if enrollment.is_completed %}
+                    {% set completed_students = completed_students + 1 %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        
+        document.getElementById('total_students').textContent = {{ total_students }};
+        document.getElementById('total_lessons').textContent = {{ total_lessons }};
+        document.getElementById('completed_students').textContent = {{ completed_students }};
+
+        // Course search functionality
+        const searchInput = document.getElementById('courseSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const courseItems = document.querySelectorAll('.course-item');
+                
+                courseItems.forEach(item => {
+                    const title = item.dataset.courseTitle;
+                    const category = item.dataset.courseCategory;
+                    
+                    const matches = title.includes(searchTerm) || category.includes(searchTerm) || searchTerm === '';
+                    item.style.display = matches ? '' : 'none';
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

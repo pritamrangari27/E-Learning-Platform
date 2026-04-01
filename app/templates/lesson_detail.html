@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}{{ lesson.title }} - E-Learning Platform{% endblock %}
+
+{% set back_button = {'url': url_for('view_course', course_id=course.id), 'label': 'Back to Course'} %}
+
+{% block content %}
+<!-- Lesson Header -->
+<div class="row mb-4">
+    <div class="col-md-9">
+        <div class="card lesson-card bg-light">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="badge bg-primary badge-pill me-2">
+                            Lesson {{ lesson.lesson_number }}
+                        </span>
+                        <h1 class="mt-2">{{ lesson.title }}</h1>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted d-block">
+                            <i class="bi bi-clock"></i> {{ lesson.duration_minutes }} minutes
+                        </small>
+                    </div>
+                </div>
+
+                <div class="row text-muted">
+                    <div class="col-md-6">
+                        <small>
+                            <i class="bi bi-person"></i> 
+                            Instructor: <strong>{{ lesson.created_by.full_name }}</strong>
+                        </small>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <small>
+                            <i class="bi bi-calendar"></i> 
+                            Updated: <strong>{{ lesson.updated_at.strftime('%B %d, %Y') }}</strong>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Sidebar -->
+    <div class="col-md-3">
+        <div class="card sticky-top" style="top: 70px;">
+            <div class="card-header bg-light">
+                <h6 class="mb-0">Course Navigation</h6>
+            </div>
+            <div class="list-group list-group-flush">
+                {% set sorted_lessons = course.lessons|sort(attribute='lesson_number') %}
+                {% for l in sorted_lessons %}
+                    <a href="{{ url_for('view_lesson', lesson_id=l.id) }}" 
+                       class="list-group-item list-group-item-action {% if l.id == lesson.id %}active{% endif %}">
+                        <span class="badge bg-secondary me-2">{{ l.lesson_number }}</span>
+                        <span class="small">{{ l.title }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lesson Content -->
+<div class="row mb-4">
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Lesson Content</h5>
+            </div>
+            <div class="card-body">
+                <div class="lesson-content text-break" style="line-height: 1.8;">
+                    {{ lesson.content|replace('\n', '<br>')|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Between Lessons -->
+<div class="row mb-4">
+    <div class="col-md-9">
+        <div class="d-flex justify-content-between align-items-center">
+            {% set prev_lesson = course.lessons|selectattr('lesson_number', 'lessthan', lesson.lesson_number)|sort(attribute='lesson_number')|last %}
+            {% set next_lesson = course.lessons|selectattr('lesson_number', 'greaterthan', lesson.lesson_number)|sort(attribute='lesson_number')|first %}
+            
+            <div>
+                {% if prev_lesson %}
+                    <a href="{{ url_for('view_lesson', lesson_id=prev_lesson.id) }}" class="btn btn-outline-primary">
+                        <i class="bi bi-chevron-left"></i> Previous Lesson
+                    </a>
+                {% else %}
+                    <button class="btn btn-outline-secondary" disabled>
+                        <i class="bi bi-chevron-left"></i> Previous Lesson
+                    </button>
+                {% endif %}
+            </div>
+
+            <div class="text-center">
+                <small class="text-muted">
+                    Lesson {{ lesson.lesson_number }} of {{ course.lessons|length }}
+                </small>
+            </div>
+
+            <div>
+                {% if next_lesson %}
+                    <a href="{{ url_for('view_lesson', lesson_id=next_lesson.id) }}" class="btn btn-outline-primary">
+                        Next Lesson <i class="bi bi-chevron-right"></i>
+                    </a>
+                {% else %}
+                    <div>
+                        <button class="btn btn-outline-secondary" disabled>
+                            Next Lesson <i class="bi bi-chevron-right"></i>
+                        </button>
+                        <small class="d-block mt-2 text-success">
+                            <i class="bi bi-check-circle"></i> You've completed this course!
+                        </small>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Course Info Card -->
+<div class="row">
+    <div class="col-md-9">
+        <div class="card bg-light">
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <strong class="d-block">Course</strong>
+                        <a href="{{ url_for('view_course', course_id=course.id) }}" class="text-decoration-none">
+                            {{ course.title }}
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <strong class="d-block">Instructor</strong>
+                        {{ course.instructor.full_name }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong class="d-block">Total Lessons</strong>
+                        {{ course.lessons|length }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .lesson-content {
+        font-size: 1.1rem;
+        color: #333;
+    }
+    
+    .lesson-content code {
+        background-color: #f5f5f5;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.25rem;
+        font-family: 'Courier New', monospace;
+    }
+</style>
+{% endblock %}
