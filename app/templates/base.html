@@ -34,6 +34,32 @@
             letter-spacing: 0.5px;
         }
         
+        /* New Course Button Styling */
+        .nav-new-course {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white !important;
+            padding: 0.5rem 1.2rem !important;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: 0.5rem;
+        }
+        
+        .nav-new-course:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .nav-new-course i {
+            font-size: 1.1rem;
+        }
+        
         .main-container {
             min-height: calc(100vh - 60px);
             padding-top: 2rem;
@@ -914,7 +940,7 @@
                         </li>
                         {% if session.role == 'instructor' %}
                             <li class="nav-item">
-                                <a class=\"nav-link\" href=\"{{ url_for('dashboard') }}\" title=\"Create Course\">
+                                <a class="nav-link nav-new-course" href="{{ url_for('dashboard') }}" title="Create a new course">
                                     <i class="bi bi-plus-circle"></i> New Course
                                 </a>
                             </li>
