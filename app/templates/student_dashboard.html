@@ -89,7 +89,7 @@
     </div>
     
     <!-- No Enrolled Courses Message -->
-    {% if not enrolled_courses %}
+    {% if enrolled_courses %}
         <div class="courses-horizontal-container" id="enrolledCoursesContainer">
             {% for course in enrolled_courses %}
                 {% set enrollment = course.enrollments|selectattr('student_id', 'equalto', user.id)|first %}
