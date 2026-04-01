@@ -690,7 +690,7 @@
                         <div class="lesson-duration">
                             <i class="bi bi-clock"></i> {{ lesson.duration_minutes }} min
                         </div>
-                        {% if current_user.is_authenticated %}
+                        {% if enrollment %}
                             <div class="lesson-info-right">
                                 <span class="lesson-instructor">
                                     <i class="bi bi-person"></i>

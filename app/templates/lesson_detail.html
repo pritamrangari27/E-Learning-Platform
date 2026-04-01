@@ -6,7 +6,7 @@
 
 {% block content %}
 <!-- Lesson Header -->
-<div class="row mb-4">
+<div class="row mb-3">
     <div class="col-md-9">
         <div class="card lesson-card bg-light">
             <div class="card-body">
@@ -63,7 +63,7 @@
 </div>
 
 <!-- Lesson Content -->
-<div class="row mb-4">
+<div class="row mb-3">
     <div class="col-md-9">
         <div class="card">
             <div class="card-header">
@@ -150,6 +150,14 @@
 </div>
 
 <style>
+    .lesson-card {
+        margin-bottom: 0;
+    }
+
+    .lesson-card .card-body {
+        padding: 1rem;
+    }
+
     .lesson-content {
         font-size: 1.1rem;
         color: #333;
