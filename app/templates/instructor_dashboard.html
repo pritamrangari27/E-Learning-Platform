@@ -6,8 +6,9 @@
 <style>
     /* Dashboard Styles */
     .instructor-header {
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
         animation: slideDown 0.5s ease-out;
+        padding: 1.5rem 0;
     }
 
     .instructor-header h1 {
@@ -18,6 +19,15 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
         margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .instructor-header h1 i {
+        font-size: 2rem;
+        background: linear-gradient(135deg, #0066cc 0%, #0ea5e9 100%);
+        -webkit-background-clip: text;
     }
 
     .instructor-header .subtitle {
@@ -29,10 +39,15 @@
     .create-course-btn {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         border: none;
-        padding: 0.75rem 1.5rem;
+        padding: 0.85rem 1.8rem;
         font-weight: 600;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        border-radius: 10px;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .create-course-btn:hover {
@@ -41,15 +56,19 @@
         color: white;
     }
 
+    .create-course-btn i {
+        font-size: 1.1rem;
+    }
+
     /* Stat Cards */
     .stat-card {
         background: white;
         border: none;
-        border-radius: 12px;
+        border-radius: 14px;
         overflow: hidden;
         position: relative;
         transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         animation: cardFade 0.5s ease-out backwards;
     }
 
@@ -86,8 +105,9 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
+        height: 5px;
         background: linear-gradient(90deg, #0066cc, #0ea5e9);
+        transition: height 0.3s ease;
     }
 
     .stat-card:nth-child(2)::before {
@@ -103,17 +123,26 @@
     }
 
     .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        transform: translateY(-6px);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-card:hover::before {
+        height: 6px;
     }
 
     .stat-icon {
-        font-size: 2.5rem;
+        font-size: 2.8rem;
         margin-bottom: 1rem;
         background: linear-gradient(135deg, #0066cc, #0ea5e9);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover .stat-icon {
+        transform: scale(1.15);
     }
 
     .stat-card:nth-child(2) .stat-icon {
@@ -132,17 +161,20 @@
     }
 
     .stat-value {
-        font-size: 2.5rem;
-        font-weight: 700;
+        font-size: 2.8rem;
+        font-weight: 800;
         color: #1f2937;
-        margin: 0.5rem 0;
+        margin: 0.75rem 0;
+        letter-spacing: -0.5px;
     }
 
     .stat-label {
         color: #6b7280;
-        font-weight: 500;
+        font-weight: 600;
         margin: 0;
         font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     /* Course Cards */
@@ -320,26 +352,115 @@
 
     .empty-state {
         text-align: center;
-        padding: 3rem;
-        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
-        border-radius: 12px;
-        border: 2px dashed #d1d5db;
+        padding: 4rem 2rem;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border-radius: 16px;
+        border: 2px solid #e5e7eb;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .empty-state::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(0, 102, 204, 0.05) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .empty-state::after {
+        content: '';
+        position: absolute;
+        bottom: -50%;
+        left: -10%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite 1s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(20px); }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .empty-state i {
-        font-size: 3rem;
-        color: #d1d5db;
-        margin-bottom: 1rem;
+        font-size: 4.5rem;
+        background: linear-gradient(135deg, #0066cc 0%, #0ea5e9 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+        display: block;
+        position: relative;
+        z-index: 1;
+        animation: bounceIn 0.8s ease-out;
+    }
+
+    @keyframes bounceIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.3);
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
 
     .empty-state h3 {
-        color: #6b7280;
-        margin-bottom: 0.5rem;
+        color: #1f2937;
+        margin-bottom: 0.75rem;
+        font-size: 1.8rem;
+        font-weight: 700;
+        position: relative;
+        z-index: 1;
     }
 
     .empty-state p {
-        color: #9ca3af;
-        margin-bottom: 1.5rem;
+        color: #6b7280;
+        margin-bottom: 2rem;
+        font-size: 1rem;
+        position: relative;
+        z-index: 1;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .empty-state .btn {
+        position: relative;
+        z-index: 1;
+        padding: 0.8rem 2rem !important;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .empty-state .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
     }
 
     .search-box {
