@@ -227,7 +227,7 @@
         background: white;
         border: 1px solid #e5e7eb;
         border-radius: 10px;
-        margin-bottom: 0.8rem;
+        margin-bottom: 0.6rem;
         transition: all 0.3s ease;
         overflow: hidden;
         animation: fadeInUp 0.5s ease-out backwards;
@@ -243,14 +243,15 @@
     .lesson-item:hover {
         border-color: #0066cc;
         box-shadow: 0 8px 24px rgba(0, 102, 204, 0.12);
-        transform: translateY(-4px);
+        transform: translateY(-2px);
     }
 
     .lesson-header {
-        padding: 1rem;
-        display: flex;
+        padding: 0.75rem;
+        display: grid;
+        grid-template-columns: auto 1fr auto auto;
         align-items: center;
-        justify-content: space-between;
+        gap: 0.75rem;
         cursor: pointer;
         background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
         transition: background 0.3s ease;
@@ -263,37 +264,54 @@
     .lesson-number {
         background: linear-gradient(135deg, #0066cc 0%, #0ea5e9 100%);
         color: white;
-        width: 35px;
-        height: 35px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 700;
-        margin-right: 0.75rem;
         flex-shrink: 0;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
 
     .lesson-title {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         font-weight: 600;
         color: #1f2937;
-        flex: 1;
         margin: 0;
     }
 
     .lesson-duration {
         background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
         color: white;
-        padding: 0.3rem 0.65rem;
+        padding: 0.25rem 0.55rem;
         border-radius: 5px;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 600;
         display: flex;
         align-items: center;
-        gap: 0.3rem;
+        gap: 0.2rem;
         white-space: nowrap;
+    }
+
+    .lesson-info-right {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+
+    .lesson-instructor {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .lesson-instructor i {
+        color: #0066cc;
+        font-size: 0.85rem;
     }
 
     .lesson-body {
@@ -667,13 +685,19 @@
             {% for lesson in lessons %}
                 <div class="lesson-item {% if loop.first %}active{% endif %}">
                     <div class="lesson-header" onclick="toggleLesson(this)">
-                        <div style="display: flex; align-items: center; flex: 1;">
-                            <div class="lesson-number">{{ lesson.lesson_number }}</div>
-                            <h3 class="lesson-title">{{ lesson.title }}</h3>
-                        </div>
+                        <div class="lesson-number">{{ lesson.lesson_number }}</div>
+                        <h3 class="lesson-title">{{ lesson.title }}</h3>
                         <div class="lesson-duration">
                             <i class="bi bi-clock"></i> {{ lesson.duration_minutes }} min
                         </div>
+                        {% if current_user.is_authenticated %}
+                            <div class="lesson-info-right">
+                                <span class="lesson-instructor">
+                                    <i class="bi bi-person"></i>
+                                    Instructor
+                                </span>
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="lesson-body">
