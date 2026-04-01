@@ -599,9 +599,12 @@
     }
 
     /* Sticky Sidebar */
-    .sidebar-wrapper {
+    .sidebar-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
         position: sticky;
-        top: 90px;
+        top: 100px;
     }
 
     .divider {
@@ -657,12 +660,6 @@
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
-    }
-
-    .sidebar-container {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
     }
 
     @media (max-width: 1024px) {
