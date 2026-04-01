@@ -200,15 +200,9 @@
 
     .lessons-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
         margin-bottom: 2rem;
-    }
-
-    @media (max-width: 768px) {
-        .lessons-grid {
-            grid-template-columns: 1fr;
-        }
     }
 
     .section-title {
@@ -324,6 +318,32 @@
     .lesson-instructor i {
         color: #0066cc;
         font-size: 0.85rem;
+    }
+
+    .lesson-details-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        padding: 0.75rem;
+        background: #f9fafb;
+        border-top: 1px solid #e5e7eb;
+        font-size: 0.85rem;
+    }
+
+    .lesson-detail-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .lesson-detail-label {
+        color: #6b7280;
+        font-weight: 500;
+    }
+
+    .lesson-detail-value {
+        color: #1f2937;
+        font-weight: 600;
     }
 
     .lesson-body {
@@ -703,15 +723,24 @@
                         <div class="lesson-duration">
                             <i class="bi bi-clock"></i> {{ lesson.duration_minutes }} min
                         </div>
-                        {% if enrollment %}
-                            <div class="lesson-info-right">
-                                <span class="lesson-instructor">
-                                    <i class="bi bi-person"></i>
-                                    Instructor
-                                </span>
-                            </div>
-                        {% endif %}
                     </div>
+
+                    {% if enrollment %}
+                    <div class="lesson-details-row">
+                        <div class="lesson-detail-item">
+                            <span class="lesson-detail-label">
+                                <i class="bi bi-graph-up"></i> Progress:
+                            </span>
+                            <span class="lesson-detail-value">0%</span>
+                        </div>
+                        <div class="lesson-detail-item">
+                            <span class="lesson-detail-label">
+                                <i class="bi bi-person-circle"></i> Instructor:
+                            </span>
+                            <span class="lesson-detail-value">{{ course.instructor.full_name }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
 
                     <div class="lesson-body">
                         <div class="lesson-content">
