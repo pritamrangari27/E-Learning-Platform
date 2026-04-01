@@ -5,6 +5,36 @@
 {% set back_button = {'url': url_for('dashboard'), 'label': 'Back to Dashboard'} %}
 
 {% block content %}
+<style>
+    /* Enhanced Styling while maintaining structure */
+    #courseSearchInput {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        transition: all 0.3s ease;
+    }
+    
+    #courseSearchInput:focus {
+        border-color: #0066cc;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    }
+    
+    .course-card-horizontal {
+        transition: all 0.3s ease;
+    }
+    
+    .course-card-horizontal:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+    
+    /* Keep 5-column layout on desktop */
+    @media (min-width: 1400px) {
+        .courses-horizontal-container {
+            grid-template-columns: repeat(5, 1fr) !important;
+        }
+    }
+</style>
+
 <div class="row mb-4">
     <div class="col-md-12">
         <h1>Browse All Courses</h1>

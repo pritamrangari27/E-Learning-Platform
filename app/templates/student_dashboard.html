@@ -3,6 +3,40 @@
 {% block title %}Student Dashboard - E-Learning Platform{% endblock %}
 
 {% block content %}
+<style>
+    /* Enhanced Card Styling */
+    .card {
+        border: none;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+    
+    .card i {
+        transition: transform 0.3s ease;
+    }
+    
+    .card:hover i {
+        transform: scale(1.1);
+    }
+    
+    /* Search Box Enhancement */
+    #enrolledCoursesSearch {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        transition: all 0.3s ease;
+    }
+    
+    #enrolledCoursesSearch:focus {
+        border-color: #0066cc;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    }
+</style>
+
 <div class="row mb-4">
     <div class="col-md-12">
         <div class="d-flex justify-content-between align-items-center">
