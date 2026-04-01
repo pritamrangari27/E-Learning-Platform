@@ -23,18 +23,6 @@
     .card:hover i {
         transform: scale(1.1);
     }
-    
-    /* Search Box Enhancement */
-    #enrolledCoursesSearch {
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        transition: all 0.3s ease;
-    }
-    
-    #enrolledCoursesSearch:focus {
-        border-color: #0066cc;
-        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-    }
 </style>
 
 <div class="row mb-4">
@@ -99,14 +87,6 @@
             <p>Continue your learning journey with these courses</p>
         </div>
     </div>
-    
-    <!-- Search for Enrolled Courses -->
-    {% if enrolled_courses %}
-        <div style="margin-bottom: 1.5rem;">
-            <input type="text" id="enrolledCoursesSearch" class="form-control" placeholder="Search your courses..." autocomplete="off" style="max-width: 300px;">
-            <small class="text-muted" style="display: block; margin-top: 0.5rem;">Search by course name or instructor</small>
-        </div>
-    {% endif %}
     
     <!-- No Enrolled Courses Message -->
     {% if not enrolled_courses %}
