@@ -37,6 +37,34 @@ def create_app(config_name='development'):
     with app.app_context():
         db.create_all()
         
+        # Auto-cleanup: Remove duplicate lessons if any exist
+        try:
+            from sqlalchemy import func
+            # Find lessons with duplicate lesson_numbers within the same course
+            duplicates = db.session.query(
+                Lesson.course_id, 
+                Lesson.lesson_number
+            ).group_by(Lesson.course_id, Lesson.lesson_number).having(
+                func.count(Lesson.id) > 1
+            ).all()
+            
+            if duplicates:
+                print("[CLEANUP] Found duplicate lessons, removing...")
+                for course_id, lesson_num in duplicates:
+                    # Get all lessons with this course_id and lesson_number, keep the oldest
+                    dup_lessons = Lesson.query.filter_by(
+                        course_id=course_id, 
+                        lesson_number=lesson_num
+                    ).order_by(Lesson.id).all()
+                    
+                    # Delete all except the first one
+                    for dup in dup_lessons[1:]:
+                        print(f"  Removing duplicate: Course {course_id}, Lesson {lesson_num} (ID: {dup.id})")
+                        db.session.delete(dup)
+                db.session.commit()
+        except Exception as e:
+            print(f"[CLEANUP] Error during cleanup: {str(e)}")
+        
         # Auto-seed database if empty (no courses exist)
         if Course.query.first() is None:
             print("[SEED] Database is empty. Auto-seeding...")
@@ -104,18 +132,22 @@ def create_app(config_name='development'):
             
             courses = Course.query.filter_by(is_active=True).all()
             for course in courses:
-                if Lesson.query.filter_by(course_id=course.id).count() == 0:
+                # Only create lessons if course has fewer than 6 lessons
+                existing_count = Lesson.query.filter_by(course_id=course.id, is_active=True).count()
+                if existing_count < len(lesson_templates):
                     for i, lesson_template in enumerate(lesson_templates, 1):
-                        lesson = Lesson(
-                            course_id=course.id,
-                            instructor_id=course.instructor_id,
-                            title=f"{lesson_template['title']}",
-                            content=f"<h3>{lesson_template['title']}</h3><p>Lesson {i} of {course.title}</p>",
-                            lesson_number=i,
-                            duration_minutes=lesson_template['duration'],
-                            is_active=True
-                        )
-                        db.session.add(lesson)
+                        # Check if this specific lesson_number already exists for this course
+                        if not Lesson.query.filter_by(course_id=course.id, lesson_number=i).first():
+                            lesson = Lesson(
+                                course_id=course.id,
+                                instructor_id=course.instructor_id,
+                                title=f"{lesson_template['title']}",
+                                content=f"<h3>{lesson_template['title']}</h3><p>Lesson {i} of {course.title}</p>",
+                                lesson_number=i,
+                                duration_minutes=lesson_template['duration'],
+                                is_active=True
+                            )
+                            db.session.add(lesson)
             db.session.commit()
             print("[SEED] ✅ Database seeded successfully!")
     
