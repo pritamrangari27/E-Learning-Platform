@@ -90,32 +90,39 @@ def create_app(config_name='development'):
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         """User login"""
+        print(f'[LOGIN ROUTE CALLED] Method: {request.method}, Session: {bool("user_id" in session)}')
+        
         if 'user_id' in session:
+            print(f'[LOGIN] User already in session, redirecting to dashboard')
             return redirect(url_for('dashboard'))
         
         if request.method == 'POST':
             try:
                 username = request.form.get('username')
                 password = request.form.get('password')
-                print(f'Login attempt - Username: {username}, User Agent: {request.headers.get("User-Agent")}')
+                print(f'[LOGIN] POST - Username: {username}, Password provided: {bool(password)}')
+                print(f'[LOGIN] User-Agent: {request.headers.get("User-Agent")}')
                 
                 user = User.query.filter_by(username=username).first()
+                print(f'[LOGIN] User query result: {user.username if user else "NOT FOUND"}')
                 
                 if user and user.check_password(password):
                     session['user_id'] = user.id
                     session['username'] = user.username
                     session['role'] = user.role
                     flash(f'Welcome back, {user.full_name}!', 'success')
-                    print(f'Login successful for {username}')
+                    print(f'[LOGIN] ✓ SUCCESS for {username} - Redirecting to dashboard')
                     return redirect(url_for('dashboard'))
                 else:
                     flash('Invalid username or password', 'danger')
-                    print(f'Login failed for {username}')
+                    print(f'[LOGIN] ✗ FAILED for {username} - Redirecting to index with error')
             except Exception as e:
-                print(f'Login Error: {str(e)}')
+                print(f'[LOGIN] ERROR: {str(e)}')
+                import traceback
+                traceback.print_exc()
                 flash('An error occurred during login. Please try again.', 'danger')
         
-        # Redirect to landing page with login modal on GET request
+        print(f'[LOGIN] GET or failed POST - Redirecting to index')
         return redirect(url_for('index'))
     
     @app.route('/logout')
