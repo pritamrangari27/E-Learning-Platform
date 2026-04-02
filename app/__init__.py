@@ -197,24 +197,40 @@ def create_app(config_name='development'):
     @login_required
     def view_courses():
         """View all available courses"""
-        courses = Course.query.filter_by(is_active=True).all()
-        user = User.query.get(session['user_id'])
-        
-        # Get list of courses user is already enrolled in
-        enrolled_course_ids = [e.course_id for e in user.enrollments]
-        
-        return render_template('courses.html', courses=courses, enrolled_course_ids=enrolled_course_ids)
+        try:
+            courses = Course.query.filter_by(is_active=True).all()
+            user = User.query.get(session['user_id'])
+            
+            # Get list of courses user is already enrolled in
+            enrolled_course_ids = [e.course_id for e in user.enrollments]
+            
+            print(f'Courses Route - User: {user.username}, Courses found: {len(courses)}, User Agent: {request.headers.get("User-Agent")}')
+            return render_template('courses.html', courses=courses, enrolled_course_ids=enrolled_course_ids)
+        except Exception as e:
+            print(f'Courses Route Error: {str(e)}')
+            print(f'User Agent: {request.headers.get("User-Agent")}')
+            import traceback
+            traceback.print_exc()
+            raise
     
     @app.route('/course/<int:course_id>')
     @login_required
     def view_course(course_id):
         """View course details"""
-        course = Course.query.get_or_404(course_id)
-        user = User.query.get(session['user_id'])
-        enrollment = Enrollment.query.filter_by(student_id=user.id, course_id=course_id).first()
-        lessons = Lesson.query.filter_by(course_id=course_id, is_active=True).order_by(Lesson.lesson_number).all()
-        
-        return render_template('course_detail.html', course=course, lessons=lessons, enrollment=enrollment)
+        try:
+            course = Course.query.get_or_404(course_id)
+            user = User.query.get(session['user_id'])
+            enrollment = Enrollment.query.filter_by(student_id=user.id, course_id=course_id).first()
+            lessons = Lesson.query.filter_by(course_id=course_id, is_active=True).order_by(Lesson.lesson_number).all()
+            
+            print(f'Course Detail Route - Course: {course.title}, Lessons: {len(lessons)}, User Agent: {request.headers.get("User-Agent")}')
+            return render_template('course_detail.html', course=course, lessons=lessons, enrollment=enrollment)
+        except Exception as e:
+            print(f'Course Detail Route Error: {str(e)}')
+            print(f'Course ID: {course_id}, User Agent: {request.headers.get("User-Agent")}')
+            import traceback
+            traceback.print_exc()
+            raise
     
     @app.route('/course/create', methods=['GET', 'POST'])
     @instructor_required
