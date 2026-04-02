@@ -422,7 +422,6 @@ def create_app(config_name='development'):
                 {'username': 'prof_johnson', 'email': 'johnson@university.edu', 'full_name': 'Prof. Sarah Johnson', 'role': 'instructor'},
             ]
             
-            instructor_ids = []
             for instr_data in instructors:
                 existing = User.query.filter_by(username=instr_data['username']).first()
                 if not existing:
@@ -434,9 +433,11 @@ def create_app(config_name='development'):
                     )
                     instr.set_password('password123')
                     db.session.add(instr)
-                instructor_ids.append(instr.id if existing else len(instructor_ids))
             
             db.session.commit()
+            
+            # Retrieve instructor IDs after commit
+            instructor_ids = [u.id for u in User.query.filter_by(role='instructor').all()]
             
             # Seed courses
             courses_data = [
