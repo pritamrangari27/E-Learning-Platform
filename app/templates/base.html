@@ -897,47 +897,49 @@
         
         @media (max-width: 480px) {
             .courses-horizontal-container {
-                grid-template-columns: 1fr;
-                gap: 0.75rem;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
             }
             
             /* Mobile-specific card sizing and typography */
             .course-card-horizontal {
-                padding: 0.75rem !important;
+                padding: 0.5rem !important;
             }
             
             .course-card-horizontal-body {
-                padding: 0.75rem !important;
+                padding: 0.6rem !important;
             }
             
             .course-card-horizontal-title {
-                font-size: 0.9rem !important;
-                margin-bottom: 0.4rem !important;
+                font-size: 0.8rem !important;
+                margin-bottom: 0.3rem !important;
+                line-height: 1.2 !important;
             }
             
             .course-card-horizontal-category {
-                font-size: 0.65rem !important;
-                padding: 0.25rem 0.5rem !important;
-                margin-bottom: 0.4rem !important;
+                font-size: 0.6rem !important;
+                padding: 0.2rem 0.4rem !important;
+                margin-bottom: 0.3rem !important;
             }
             
             .course-card-horizontal-info {
-                gap: 0.5rem !important;
-                margin-bottom: 0.4rem !important;
+                gap: 0.4rem !important;
+                margin-bottom: 0.3rem !important;
+                font-size: 0.7rem !important;
             }
             
             .course-card-horizontal-stat {
-                font-size: 0.75rem !important;
+                font-size: 0.65rem !important;
             }
             
             .course-card-horizontal-instructor {
-                font-size: 0.75rem !important;
-                margin-bottom: 0.4rem !important;
+                font-size: 0.7rem !important;
+                margin-bottom: 0.3rem !important;
             }
             
             .course-card-horizontal-button {
-                padding: 0.4rem 0.8rem !important;
-                font-size: 0.75rem !important;
+                padding: 0.35rem 0.6rem !important;
+                font-size: 0.7rem !important;
             }
             
             .section-header {
@@ -957,9 +959,11 @@
                 font-size: 0.8rem !important;
             }
             
-            /* Quick Stats optimized for mobile */
+            /* Quick Stats optimized for mobile - 1x2 grid */
             .row.mb-4 > .col-md-3 {
+                flex: 0 0 calc(50% - 0.375rem);
                 margin-bottom: 0.75rem;
+                max-width: calc(50% - 0.375rem);
             }
             
             .row.mb-4 > .col-md-3 .card {
@@ -967,22 +971,23 @@
             }
             
             .row.mb-4 > .col-md-3 .card-body {
-                padding: 0.75rem !important;
+                padding: 0.6rem !important;
             }
             
             .row.mb-4 > .col-md-3 .card-body i {
-                font-size: 1.5rem !important;
+                font-size: 1.2rem !important;
             }
             
             .row.mb-4 > .col-md-3 .card-body h3 {
-                font-size: 1.5rem !important;
-                margin-top: 0.5rem !important;
-                margin-bottom: 0.25rem !important;
+                font-size: 1.1rem !important;
+                margin-top: 0.4rem !important;
+                margin-bottom: 0.2rem !important;
             }
             
             .row.mb-4 > .col-md-3 .card-body p {
-                font-size: 0.75rem !important;
+                font-size: 0.65rem !important;
                 margin-bottom: 0 !important;
+                line-height: 1.2;
             }
             
             /* Mobile-optimized logout dropdown */
