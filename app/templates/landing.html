@@ -894,19 +894,104 @@
     </nav>
 
     <!-- FLASH MESSAGES -->
+    <style>
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            min-width: 300px;
+            z-index: 9999;
+            animation: slideInRight 0.4s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+
+        .toast-notification.dismiss {
+            animation: slideOutRight 0.4s ease-out forwards;
+        }
+
+        .toast-notification .alert {
+            border: none;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast-notification .alert-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .toast-notification .alert-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .toast-notification .alert-info {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+        }
+
+        .toast-notification .alert strong {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .toast-notification .alert i {
+            font-size: 1.2rem;
+        }
+    </style>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="container mt-3">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' if category == 'success' else 'info' if category == 'warning' else 'info' }} alert-dismissible fade show" role="alert">
+            {% for category, message in messages %}
+                <div class="toast-notification" id="toast-{{ loop.index }}">
+                    <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' if category == 'success' else 'info' }}" role="alert">
                         <strong>
-                            {% if category == 'danger' %}<i class="bi bi-exclamation-triangle"></i> Error:{% elif category == 'success' %}<i class="bi bi-check-circle"></i> Success!{% else %}<i class="bi bi-info-circle"></i> Info:{% endif %}
+                            {% if category == 'danger' %}<i class="bi bi-exclamation-triangle"></i> Error{% elif category == 'success' %}<i class="bi bi-check-circle"></i> Success{% else %}<i class="bi bi-info-circle"></i> Info{% endif %}
                         </strong>
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <span>{{ message }}</span>
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+                <script>
+                    setTimeout(function() {
+                        const toast = document.getElementById('toast-{{ loop.index }}');
+                        if (toast) {
+                            toast.classList.add('dismiss');
+                            setTimeout(function() {
+                                toast.remove();
+                            }, 400);
+                        }
+                    }, 1000);
+                </script>
+            {% endfor %}
         {% endif %}
     {% endwith %}
 
