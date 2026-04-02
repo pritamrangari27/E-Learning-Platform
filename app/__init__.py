@@ -304,12 +304,24 @@ def create_app(config_name='development'):
                 # Get list of course IDs student is already enrolled in
                 enrolled_course_ids = [e.course_id for e in user.enrollments]
                 
+                # Calculate available courses (excluding enrolled ones)
+                available_courses = [course for course in all_courses if course.id not in enrolled_course_ids]
+                
+                # Calculate in-progress enrollments
+                in_progress_count = len([e for e in user.enrollments if not e.is_completed])
+                
+                # Calculate completed enrollments
+                completed_count = len([e for e in user.enrollments if e.is_completed])
+                
+                print(f'[DASHBOARD] Available courses: {len(available_courses)}, In progress: {in_progress_count}, Completed: {completed_count}')
                 print(f'[DASHBOARD] Rendering student_dashboard.html')
                 return render_template('student_dashboard.html', 
                                      user=user, 
                                      enrolled_courses=enrolled_courses,
-                                     available_courses=all_courses,
-                                     enrolled_course_ids=enrolled_course_ids)
+                                     available_courses=available_courses,
+                                     enrolled_course_ids=enrolled_course_ids,
+                                     in_progress_count=in_progress_count,
+                                     completed_count=completed_count)
             else:  # instructor
                 print(f'[DASHBOARD] Loading instructor dashboard')
                 # Display instructor's courses
