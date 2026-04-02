@@ -43,10 +43,6 @@
             display: none !important;
         }
         
-        .d-md-none.mb-0 {
-            display: none !important;
-        }
-        
         .row.mb-3:nth-of-type(n+2) {
             display: none !important;
         }
@@ -73,12 +69,58 @@
             padding: 0.5rem 0 !important;
         }
         
-        /* Lesson duration/metadata section - show between title and buttons */
-        .row.mb-3:first-of-type + * {
-            display: block !important;
+        /* Mobile Course Navigation - Always Visible */
+        .mobile-course-nav {
             margin-bottom: 0.75rem !important;
         }
         
+        .mobile-course-nav .card {
+            border-radius: 8px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-course-nav .card-header {
+            padding: 0.6rem !important;
+            font-size: 0.8rem !important;
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%) !important;
+        }
+        
+        .mobile-course-nav .card-header h6 {
+            font-size: 0.75rem !important;
+            margin: 0;
+        }
+        
+        .mobile-course-nav .list-group-item {
+            padding: 0.5rem 0.6rem !important;
+            font-size: 0.75rem !important;
+            border: 1px solid #e9ecef;
+        }
+        
+        .mobile-course-nav .list-group-item.active {
+            background-color: #0066cc !important;
+            border-color: #0066cc !important;
+            color: white !important;
+        }
+        
+        .mobile-course-nav .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .mobile-course-nav .list-group-item.active:hover {
+            background-color: #0052a3 !important;
+        }
+        
+        .mobile-course-nav .badge {
+            font-size: 0.6rem !important;
+            padding: 0.25rem 0.4rem !important;
+        }
+        
+        .mobile-course-nav .small {
+            font-size: 0.7rem !important;
+        }
+        
+        /* Lesson duration/metadata section */
         .lesson-metadata {
             background: linear-gradient(135deg, #f0f7ff 0%, #e7f1ff 100%);
             border: 1px solid #b3d9ff;
@@ -321,29 +363,23 @@
     </div>
 </div>
 
-<!-- Mobile Course Navigation - Collapsible Accordion -->
-<div class="d-md-none mb-0">
-    <div class="accordion" id="mobileNavAccordion">
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navigationCollapse">
-                    <i class="bi bi-list"></i> Course Navigation
-                </button>
-            </h2>
-            <div id="navigationCollapse" class="accordion-collapse collapse" data-bs-parent="#mobileNavAccordion">
-                <div class="accordion-body p-0">
-                    <div class="list-group list-group-flush">
-                        {% set sorted_lessons = course.lessons|sort(attribute='lesson_number') %}
-                        {% for l in sorted_lessons %}
-                            <a href="{{ url_for('view_lesson', lesson_id=l.id) }}" 
-                               class="list-group-item list-group-item-action {% if l.id == lesson.id %}active{% endif %}">
-                                <span class="badge bg-secondary me-2">{{ l.lesson_number }}</span>
-                                <span class="small">{{ l.title }}</span>
-                            </a>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+<!-- Mobile Course Navigation - Always Visible -->
+<div class="mobile-course-nav d-md-none mb-3">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h6 class="mb-0">
+                <i class="bi bi-list"></i> Course Navigation
+            </h6>
+        </div>
+        <div class="list-group list-group-flush">
+            {% set sorted_lessons = course.lessons|sort(attribute='lesson_number') %}
+            {% for l in sorted_lessons %}
+                <a href="{{ url_for('view_lesson', lesson_id=l.id) }}" 
+                   class="list-group-item list-group-item-action {% if l.id == lesson.id %}active{% endif %}">
+                    <span class="badge bg-secondary me-2">{{ l.lesson_number }}</span>
+                    <span class="small">{{ l.title }}</span>
+                </a>
+            {% endfor %}
         </div>
     </div>
 </div>
