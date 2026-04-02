@@ -36,6 +36,88 @@ def create_app(config_name='development'):
     # Create database tables
     with app.app_context():
         db.create_all()
+        
+        # Auto-seed database if empty (no courses exist)
+        if Course.query.first() is None:
+            print("[SEED] Database is empty. Auto-seeding...")
+            
+            # Create instructors
+            instructors_data = [
+                {'username': 'dr_smith', 'email': 'smith@university.edu', 'full_name': 'Dr. John Smith', 'role': 'instructor'},
+                {'username': 'prof_johnson', 'email': 'johnson@university.edu', 'full_name': 'Prof. Sarah Johnson', 'role': 'instructor'},
+            ]
+            
+            for instr_data in instructors_data:
+                if not User.query.filter_by(username=instr_data['username']).first():
+                    instr = User(
+                        username=instr_data['username'],
+                        email=instr_data['email'],
+                        full_name=instr_data['full_name'],
+                        role=instr_data['role']
+                    )
+                    instr.set_password('password123')
+                    db.session.add(instr)
+            db.session.commit()
+            
+            # Get instructor IDs
+            instructors = User.query.filter_by(role='instructor').all()
+            instructor_ids = [i.id for i in instructors]
+            
+            # Create courses
+            courses_data = [
+                {'title': 'Python for Beginners', 'description': 'Learn Python from scratch', 'category': 'Programming'},
+                {'title': 'Web Development with Django', 'description': 'Build web apps with Django framework', 'category': 'Programming'},
+                {'title': 'JavaScript Essentials', 'description': 'Master JavaScript fundamentals', 'category': 'Programming'},
+                {'title': 'React.js Advanced', 'description': 'Advanced React patterns and hooks', 'category': 'Frontend'},
+                {'title': 'Data Science with Pandas', 'description': 'Data analysis and manipulation', 'category': 'Data Science'},
+                {'title': 'Machine Learning Basics', 'description': 'Introduction to ML algorithms', 'category': 'Data Science'},
+                {'title': 'Database Design & SQL', 'description': 'Master relational databases', 'category': 'Database'},
+                {'title': 'Cloud Computing with AWS', 'description': 'Deploy apps on AWS', 'category': 'Cloud'},
+                {'title': 'Docker & Kubernetes', 'description': 'Containerization and orchestration', 'category': 'DevOps'},
+                {'title': 'Git & Version Control', 'description': 'Master Git workflows', 'category': 'Tools'},
+                {'title': 'API Development REST', 'description': 'Build scalable REST APIs', 'category': 'Backend'},
+                {'title': 'Mobile App Development', 'description': 'React Native mobile apps', 'category': 'Mobile'},
+            ]
+            
+            for i, course_data in enumerate(courses_data):
+                if not Course.query.filter_by(title=course_data['title']).first():
+                    instructor_id = instructor_ids[i % len(instructor_ids)]
+                    course = Course(
+                        title=course_data['title'],
+                        description=course_data['description'],
+                        category=course_data['category'],
+                        instructor_id=instructor_id,
+                        is_active=True
+                    )
+                    db.session.add(course)
+            db.session.commit()
+            
+            # Create lessons for each course
+            lesson_templates = [
+                {'title': 'Introduction & Setup', 'duration': 15},
+                {'title': 'Core Concepts & Fundamentals', 'duration': 45},
+                {'title': 'Practical Examples & Exercises', 'duration': 60},
+                {'title': 'Advanced Techniques', 'duration': 50},
+                {'title': 'Best Practices & Optimization', 'duration': 40},
+                {'title': 'Project & Real-world Application', 'duration': 90},
+            ]
+            
+            courses = Course.query.filter_by(is_active=True).all()
+            for course in courses:
+                if Lesson.query.filter_by(course_id=course.id).count() == 0:
+                    for i, lesson_template in enumerate(lesson_templates, 1):
+                        lesson = Lesson(
+                            course_id=course.id,
+                            instructor_id=course.instructor_id,
+                            title=f"{lesson_template['title']}",
+                            content=f"<h3>{lesson_template['title']}</h3><p>Lesson {i} of {course.title}</p>",
+                            lesson_number=i,
+                            duration_minutes=lesson_template['duration'],
+                            is_active=True
+                        )
+                        db.session.add(lesson)
+            db.session.commit()
+            print("[SEED] ✅ Database seeded successfully!")
     
     # ==================== Authentication Routes ====================
     
