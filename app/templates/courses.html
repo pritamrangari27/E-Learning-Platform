@@ -61,7 +61,7 @@
                     </div>
                     
                     <!-- Action Buttons -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: auto;">
+                    <div class="course-card-button-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: auto;">
                         {% if course.id in enrolled_course_ids %}
                             <a href="{{ url_for('view_course', course_id=course.id) }}" class="course-card-horizontal-button btn-continue">
                                 <i class="bi bi-play-circle"></i> Continue
