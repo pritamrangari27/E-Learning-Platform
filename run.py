@@ -6,7 +6,9 @@ from app import create_app, db
 from app.models import User, Course, Enrollment, Lesson
 import os
 
-app = create_app('production')
+# Determine environment
+env = os.environ.get('FLASK_ENV', 'development')
+app = create_app(env if env in ['development', 'production'] else 'production')
 
 @app.shell_context_processor
 def make_shell_context():

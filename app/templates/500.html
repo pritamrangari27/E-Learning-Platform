@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - E-Learning Platform{% endblock %}
+
+{% block content %}
+<div class="container-fluid d-flex align-items-center justify-content-center" style="min-height: 60vh;">
+    <div class="text-center">
+        <div style="font-size: 5rem; color: #dc3545; font-weight: 900; margin-bottom: 1rem;">
+            500
+        </div>
+        <h1 style="font-size: 2.5rem; color: #0f172a; margin-bottom: 1rem; font-weight: 800;">
+            <i class="bi bi-exclamation-octagon"></i> Server Error
+        </h1>
+        <p style="font-size: 1.1rem; color: #666; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+            Something went wrong on our end. Our team has been notified and is working to fix the issue. Please try again in a few moments.
+        </p>
+        <div>
+            <a href="{{ url_for('index') }}" class="btn" style="background: linear-gradient(135deg, #0066cc, #0052a3); color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; margin-right: 1rem;">
+                <i class="bi bi-house-fill"></i> Go Home
+            </a>
+            <a href="{{ url_for('view_courses') }}" class="btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
+                <i class="bi bi-book"></i> Explore Courses
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #fff5f5 0%, #ffe7e7 100%);
+    }
+</style>
+{% endblock %}
