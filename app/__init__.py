@@ -172,31 +172,44 @@ def create_app(config_name='development'):
     def dashboard():
         """Main dashboard"""
         try:
+            print(f'[DASHBOARD] Starting dashboard route')
             user = User.query.get(session['user_id'])
+            print(f'[DASHBOARD] User: {user.username}, Role: {user.role}')
             
             if user.role == 'student':
+                print(f'[DASHBOARD] Loading student dashboard')
                 # Display all courses and student's enrollments
                 all_courses = Course.query.filter_by(is_active=True).all()
+                print(f'[DASHBOARD] Found {len(all_courses)} active courses')
+                
                 enrolled_courses = db.session.query(Course).join(Enrollment).filter(
                     Enrollment.student_id == user.id
                 ).all()
+                print(f'[DASHBOARD] Student enrolled in {len(enrolled_courses)} courses')
                 
                 # Get list of course IDs student is already enrolled in
                 enrolled_course_ids = [e.course_id for e in user.enrollments]
                 
+                print(f'[DASHBOARD] Rendering student_dashboard.html')
                 return render_template('student_dashboard.html', 
                                      user=user, 
                                      enrolled_courses=enrolled_courses,
                                      available_courses=all_courses,
                                      enrolled_course_ids=enrolled_course_ids)
             else:  # instructor
+                print(f'[DASHBOARD] Loading instructor dashboard')
                 # Display instructor's courses
                 courses = Course.query.filter_by(instructor_id=user.id).all()
+                print(f'[DASHBOARD] Found {len(courses)} courses for instructor')
+                
+                print(f'[DASHBOARD] Rendering instructor_dashboard.html')
                 return render_template('instructor_dashboard.html', user=user, courses=courses)
         except Exception as e:
-            print(f'Dashboard Error: {str(e)}')
-            print(f'User Agent: {request.headers.get("User-Agent")}')
-            raise
+            print(f'[DASHBOARD] ERROR: {str(e)}')
+            print(f'[DASHBOARD] Type: {type(e).__name__}')
+            import traceback
+            traceback.print_exc()
+            return f'Error loading dashboard: {str(e)}', 500
     
     # ==================== Course Routes ====================
     
@@ -205,20 +218,25 @@ def create_app(config_name='development'):
     def view_courses():
         """View all available courses"""
         try:
+            print(f'[COURSES] Starting courses route')
             courses = Course.query.filter_by(is_active=True).all()
+            print(f'[COURSES] Found {len(courses)} active courses')
+            
             user = User.query.get(session['user_id'])
+            print(f'[COURSES] User: {user.username}')
             
             # Get list of courses user is already enrolled in
             enrolled_course_ids = [e.course_id for e in user.enrollments]
+            print(f'[COURSES] User enrolled in {len(enrolled_course_ids)} courses')
             
-            print(f'Courses Route - User: {user.username}, Courses found: {len(courses)}, User Agent: {request.headers.get("User-Agent")}')
+            print(f'[COURSES] Rendering template...')
             return render_template('courses.html', courses=courses, enrolled_course_ids=enrolled_course_ids)
         except Exception as e:
-            print(f'Courses Route Error: {str(e)}')
-            print(f'User Agent: {request.headers.get("User-Agent")}')
+            print(f'[COURSES] ERROR: {str(e)}')
+            print(f'[COURSES] Type: {type(e).__name__}')
             import traceback
             traceback.print_exc()
-            raise
+            return f'Error loading courses: {str(e)}', 500
     
     @app.route('/course/<int:course_id>')
     @login_required
