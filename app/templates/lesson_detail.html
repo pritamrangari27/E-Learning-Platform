@@ -5,7 +5,191 @@
 {% set back_button = {'url': url_for('view_course', course_id=course.id), 'label': 'Back to Course'} %}
 
 {% block content %}
-<!-- Lesson Header -->
+<style>
+    /* Mobile-first responsive design for lesson detail */
+    @media (max-width: 768px) {
+        .lesson-card {
+            margin-bottom: 1rem;
+        }
+        
+        .card {
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .lesson-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        /* Mobile collapsed layout - accordion style */
+        .lesson-page-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        
+        .row {
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 0 !important;
+        }
+        
+        .col-md-9,
+        .col-md-3 {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        
+        /* Accordion-style cards for mobile */
+        .accordion-button {
+            padding: 0.75rem;
+            font-weight: 600;
+            background-color: #0066cc;
+            color: white;
+        }
+        
+        .accordion-button:not(.collapsed) {
+            background-color: #0052a3;
+            color: white;
+        }
+        
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: #0066cc;
+        }
+        
+        .accordion-body {
+            padding: 0.75rem;
+        }
+        
+        .accordion {
+            border: none;
+            gap: 0;
+            --bs-accordion-border-color: #f0f0f0;
+        }
+        
+        .accordion-item {
+            border: 1px solid #f0f0f0;
+            margin-bottom: 0;
+            border-radius: 0;
+        }
+        
+        .accordion-item:first-child {
+            border-radius: 0;
+        }
+        
+        /* Hide desktop sidebar on mobile */
+        .sticky-top {
+            position: static !important;
+        }
+        
+        /* Mobile button styling */
+        .btn-outline-primary,
+        .btn-outline-secondary {
+            width: 100%;
+            padding: 0.5rem 0.6rem !important;
+            font-size: 0.75rem !important;
+            margin-bottom: 0.4rem !important;
+        }
+        
+        .btn-outline-primary:disabled,
+        .btn-outline-secondary:disabled {
+            opacity: 0.6;
+        }
+        
+        /* Navigation buttons layout */
+        .d-flex.justify-content-between {
+            flex-direction: column !important;
+            gap: 0.4rem;
+        }
+        
+        .text-center {
+            text-align: center !important;
+            padding: 0.3rem 0;
+            font-size: 0.7rem !important;
+        }
+        
+        /* Badge and header styling */
+        .badge {
+            font-size: 0.65rem !important;
+        }
+        
+        .badge-pill {
+            padding: 0.3rem 0.6rem !important;
+        }
+        
+        h1 {
+            font-size: 1.1rem;
+            margin-top: 0.3rem;
+        }
+        
+        h5 {
+            font-size: 0.85rem;
+        }
+        
+        /* Course info grid */
+        .row.text-center {
+            flex-direction: column;
+        }
+        
+        .col-md-4 {
+            margin-bottom: 0.4rem;
+        }
+        
+        /* List group items */
+        .list-group-item {
+            padding: 0.5rem 0.6rem !important;
+            font-size: 0.8rem;
+        }
+        
+        .list-group-item .badge {
+            margin-right: 0.3rem;
+        }
+        
+        /* Content text sizing */
+        .lesson-content {
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+        
+        /* Remove extra spacing */
+        .mb-3 {
+            margin-bottom: 0 !important;
+        }
+        
+        .mb-4 {
+            margin-bottom: 0 !important;
+        }
+        
+        /* Card header styling */
+        .card-header {
+            padding: 0.6rem;
+        }
+        
+        .card-body {
+            padding: 0.6rem;
+        }
+        
+        .text-end {
+            text-align: end;
+        }
+        
+        small {
+            font-size: 0.75rem !important;
+        }
+    }
+</style>
+
+<!-- Mobile-optimized Lesson Page -->
+<div class="lesson-page-container">
 <div class="row mb-3">
     <div class="col-md-9">
         <div class="card lesson-card bg-light">
@@ -42,8 +226,8 @@
         </div>
     </div>
 
-    <!-- Navigation Sidebar -->
-    <div class="col-md-3">
+    <!-- Navigation Sidebar - Desktop Only -->
+    <div class="col-md-3 d-none d-md-block">
         <div class="card sticky-top" style="top: 70px;">
             <div class="card-header bg-light">
                 <h6 class="mb-0">Course Navigation</h6>
@@ -57,6 +241,33 @@
                         <span class="small">{{ l.title }}</span>
                     </a>
                 {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Course Navigation - Collapsible Accordion -->
+<div class="d-md-none mb-0">
+    <div class="accordion" id="mobileNavAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navigationCollapse">
+                    <i class="bi bi-list"></i> Course Navigation
+                </button>
+            </h2>
+            <div id="navigationCollapse" class="accordion-collapse collapse" data-bs-parent="#mobileNavAccordion">
+                <div class="accordion-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% set sorted_lessons = course.lessons|sort(attribute='lesson_number') %}
+                        {% for l in sorted_lessons %}
+                            <a href="{{ url_for('view_lesson', lesson_id=l.id) }}" 
+                               class="list-group-item list-group-item-action {% if l.id == lesson.id %}active{% endif %}">
+                                <span class="badge bg-secondary me-2">{{ l.lesson_number }}</span>
+                                <span class="small">{{ l.title }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
