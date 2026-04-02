@@ -29,7 +29,7 @@
     }
     
     @media (max-width: 480px) {
-        /* Hide unnecessary sections on mobile - show only title, course info and nav buttons */
+        /* Hide unnecessary sections on mobile - show only title and nav buttons */
         .row.mb-3 .col-md-9 .card.lesson-card .row.text-muted {
             display: none !important;
         }
@@ -73,54 +73,27 @@
             padding: 0.5rem 0 !important;
         }
         
-        /* Show Course Info on mobile but styled */
-        .row:has(.bg-light) {
+        /* Lesson duration/metadata section - show between title and buttons */
+        .row.mb-3:first-of-type + * {
             display: block !important;
-            margin-bottom: 1rem !important;
+            margin-bottom: 0.75rem !important;
         }
         
-        .row:has(.bg-light) .col-md-9 {
-            padding: 0 !important;
-        }
-        
-        .row:has(.bg-light) .card.bg-light {
-            background: linear-gradient(135deg, #f0f7ff 0%, #e7f1ff 100%) !important;
-            border: 1px solid #b3d9ff !important;
+        .lesson-metadata {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e7f1ff 100%);
+            border: 1px solid #b3d9ff;
             border-radius: 8px;
-        }
-        
-        .row:has(.bg-light) .card-body {
             padding: 0.6rem !important;
-        }
-        
-        .row:has(.bg-light) .row.text-center {
-            flex-direction: row !important;
-            display: flex !important;
-            gap: 0.5rem;
-        }
-        
-        .row:has(.bg-light) .col-md-4 {
-            flex: 1;
-            margin-bottom: 0 !important;
             font-size: 0.7rem;
-        }
-        
-        .row:has(.bg-light) .col-md-4 strong {
-            font-size: 0.65rem;
-            display: block;
-            margin-bottom: 0.2rem;
-            color: #0066cc;
-        }
-        
-        .row:has(.bg-light) .col-md-4 a {
-            font-size: 0.7rem;
+            margin-bottom: 0.75rem !important;
+            text-align: center;
             color: #0066cc;
         }
         
         /* Navigation buttons - 1x3 grid layout */
         .row.mb-4 {
             display: block !important;
-            margin: 1rem 0 !important;
+            margin: 0.75rem 0 !important;
             padding: 0 !important;
         }
         
@@ -189,6 +162,58 @@
             color: inherit !important;
         }
         
+        /* Show Course Name only - below navigation buttons */
+        .row:has(.bg-light) {
+            display: block !important;
+            margin-top: 0.75rem !important;
+            margin-bottom: 4rem !important;
+        }
+        
+        .row:has(.bg-light) .col-md-9 {
+            padding: 0 !important;
+        }
+        
+        .row:has(.bg-light) .card.bg-light {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e7f1ff 100%) !important;
+            border: 1px solid #b3d9ff !important;
+            border-radius: 8px;
+            padding: 0.6rem !important;
+            text-align: center;
+        }
+        
+        .row:has(.bg-light) .card-body {
+            padding: 0 !important;
+        }
+        
+        .row:has(.bg-light) .row.text-center {
+            flex-direction: row !important;
+            display: flex !important;
+            gap: 0 !important;
+            justify-content: center;
+        }
+        
+        .row:has(.bg-light) .col-md-4 {
+            flex: none !important;
+            margin-bottom: 0 !important;
+        }
+        
+        .row:has(.bg-light) .col-md-4:nth-child(2),
+        .row:has(.bg-light) .col-md-4:nth-child(3) {
+            display: none !important;
+        }
+        
+        .row:has(.bg-light) .col-md-4 strong {
+            font-size: 0.65rem;
+            display: none;
+            color: #0066cc;
+        }
+        
+        .row:has(.bg-light) .col-md-4 a {
+            font-size: 0.75rem;
+            color: #0066cc;
+            font-weight: 600;
+        }
+        
         /* Lesson title */
         h1 {
             font-size: 1.1rem;
@@ -210,6 +235,21 @@
         .col-md-3 {
             padding-left: 0 !important;
             padding-right: 0 !important;
+        }
+        
+        /* Fixed footer */
+        body {
+            padding-bottom: 4rem;
+        }
+        
+        footer {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            margin-top: 2rem;
+            z-index: 100;
         }
     }
         
@@ -322,6 +362,11 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Lesson Metadata Section -->
+<div class="lesson-metadata d-md-none">
+    <i class="bi bi-clock"></i> {{ lesson.duration_minutes }} minutes
 </div>
 
 <!-- Navigation Between Lessons -->
