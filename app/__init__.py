@@ -94,19 +94,26 @@ def create_app(config_name='development'):
             return redirect(url_for('dashboard'))
         
         if request.method == 'POST':
-            username = request.form.get('username')
-            password = request.form.get('password')
-            
-            user = User.query.filter_by(username=username).first()
-            
-            if user and user.check_password(password):
-                session['user_id'] = user.id
-                session['username'] = user.username
-                session['role'] = user.role
-                flash(f'Welcome back, {user.full_name}!', 'success')
-                return redirect(url_for('dashboard'))
-            else:
-                flash('Invalid username or password', 'danger')
+            try:
+                username = request.form.get('username')
+                password = request.form.get('password')
+                print(f'Login attempt - Username: {username}, User Agent: {request.headers.get("User-Agent")}')
+                
+                user = User.query.filter_by(username=username).first()
+                
+                if user and user.check_password(password):
+                    session['user_id'] = user.id
+                    session['username'] = user.username
+                    session['role'] = user.role
+                    flash(f'Welcome back, {user.full_name}!', 'success')
+                    print(f'Login successful for {username}')
+                    return redirect(url_for('dashboard'))
+                else:
+                    flash('Invalid username or password', 'danger')
+                    print(f'Login failed for {username}')
+            except Exception as e:
+                print(f'Login Error: {str(e)}')
+                flash('An error occurred during login. Please try again.', 'danger')
         
         # Redirect to landing page with login modal on GET request
         return redirect(url_for('index'))
@@ -157,27 +164,32 @@ def create_app(config_name='development'):
     @login_required
     def dashboard():
         """Main dashboard"""
-        user = User.query.get(session['user_id'])
-        
-        if user.role == 'student':
-            # Display all courses and student's enrollments
-            all_courses = Course.query.filter_by(is_active=True).all()
-            enrolled_courses = db.session.query(Course).join(Enrollment).filter(
-                Enrollment.student_id == user.id
-            ).all()
+        try:
+            user = User.query.get(session['user_id'])
             
-            # Get list of course IDs student is already enrolled in
-            enrolled_course_ids = [e.course_id for e in user.enrollments]
-            
-            return render_template('student_dashboard.html', 
-                                 user=user, 
-                                 enrolled_courses=enrolled_courses,
-                                 available_courses=all_courses,
-                                 enrolled_course_ids=enrolled_course_ids)
-        else:  # instructor
-            # Display instructor's courses
-            courses = Course.query.filter_by(instructor_id=user.id).all()
-            return render_template('instructor_dashboard.html', user=user, courses=courses)
+            if user.role == 'student':
+                # Display all courses and student's enrollments
+                all_courses = Course.query.filter_by(is_active=True).all()
+                enrolled_courses = db.session.query(Course).join(Enrollment).filter(
+                    Enrollment.student_id == user.id
+                ).all()
+                
+                # Get list of course IDs student is already enrolled in
+                enrolled_course_ids = [e.course_id for e in user.enrollments]
+                
+                return render_template('student_dashboard.html', 
+                                     user=user, 
+                                     enrolled_courses=enrolled_courses,
+                                     available_courses=all_courses,
+                                     enrolled_course_ids=enrolled_course_ids)
+            else:  # instructor
+                # Display instructor's courses
+                courses = Course.query.filter_by(instructor_id=user.id).all()
+                return render_template('instructor_dashboard.html', user=user, courses=courses)
+        except Exception as e:
+            print(f'Dashboard Error: {str(e)}')
+            print(f'User Agent: {request.headers.get("User-Agent")}')
+            raise
     
     # ==================== Course Routes ====================
     
