@@ -896,6 +896,22 @@
         }
         
         @media (max-width: 480px) {
+            .navbar-brand {
+                font-size: 1rem !important;
+            }
+            
+            .nav-link {
+                padding: 0.4rem 0.5rem !important;
+                font-size: 0.75rem !important;
+            }
+            
+            #userDropdown {
+                max-width: 100px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            
             .courses-horizontal-container {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 0.5rem;
@@ -992,21 +1008,28 @@
             
             /* Mobile-optimized logout dropdown */
             .dropdown-toggle {
-                font-size: 0.9rem !important;
+                font-size: 0.8rem !important;
+                padding: 0.4rem 0.6rem !important;
             }
             
             .dropdown-menu {
-                font-size: 0.85rem !important;
-                padding: 0.25rem 0 !important;
-                min-width: 140px !important;
+                font-size: 0.75rem !important;
+                padding: 0.2rem 0 !important;
+                min-width: auto !important;
+                width: 120px !important;
+                right: 0 !important;
             }
             
             .dropdown-item {
-                padding: 0.5rem 1rem !important;
+                padding: 0.4rem 0.8rem !important;
+            }
+            
+            .dropdown-item-text {
+                font-size: 0.65rem !important;
             }
             
             .dropdown-divider {
-                margin: 0.25rem 0 !important;
+                margin: 0.15rem 0 !important;
             }
         }
         
