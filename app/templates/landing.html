@@ -893,6 +893,23 @@
         </div>
     </nav>
 
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-3">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' if category == 'success' else 'info' if category == 'warning' else 'info' }} alert-dismissible fade show" role="alert">
+                        <strong>
+                            {% if category == 'danger' %}<i class="bi bi-exclamation-triangle"></i> Error:{% elif category == 'success' %}<i class="bi bi-check-circle"></i> Success!{% else %}<i class="bi bi-info-circle"></i> Info:{% endif %}
+                        </strong>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
     <!-- MAIN CONTAINER -->
     <div class="main-container">
         <div class="split-screen">
