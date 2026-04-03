@@ -46,3 +46,6 @@ E-Learning Platform/
 ```
 
 Preview :
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0d2e21ac-098e-4eb2-bfe8-b0d24aa47bed" />
+
