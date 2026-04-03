@@ -618,7 +618,7 @@
                 </div>
             </div>
         </div>
-        {% elif course.instructor_id != session.user_id %}
+        {% elif course.instructor_id|int != session.user_id|int %}
         <div style="margin-top: 0.75rem;">
             <form method="POST" action="{{ url_for('enroll', course_id=course.id) }}" style="display: inline;">
                 <button type="submit" class="enroll-btn">
