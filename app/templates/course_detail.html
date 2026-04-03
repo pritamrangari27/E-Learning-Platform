@@ -2,7 +2,11 @@
 
 {% block title %}{{ course.title }} - E-Learning Platform{% endblock %}
 
-{% set back_button = {'url': url_for('view_courses'), 'label': 'Back to Courses'} %}
+{% if request.args.get('from') == 'dashboard' %}
+    {% set back_button = {'url': url_for('dashboard'), 'label': 'Back to Dashboard'} %}
+{% else %}
+    {% set back_button = {'url': url_for('view_courses'), 'label': 'Back to Courses'} %}
+{% endif %}
 
 {% block content %}
 <style>
