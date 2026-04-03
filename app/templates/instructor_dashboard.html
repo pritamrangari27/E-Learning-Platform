@@ -909,10 +909,79 @@
                                    class="btn btn-view">
                                     <i class="bi bi-eye"></i> View
                                 </a>
-                                <a href="{{ url_for('add_lesson', course_id=course.id) }}" 
-                                   class="btn btn-add-lesson">
+                                <button type="button" 
+                                        class="btn btn-add-lesson" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#addLessonModal{{ course.id }}">
                                     <i class="bi bi-plus"></i> Add Lesson
-                                </a>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Lesson Modal for this Course -->
+                <div class="modal fade" id="addLessonModal{{ course.id }}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content" style="border: none; border-radius: 16px;">
+                            <!-- Modal Header -->
+                            <div class="modal-header" style="background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%); color: white; border: none; border-radius: 16px 16px 0 0;">
+                                <h5 class="modal-title" style="font-weight: 700; font-size: 1.3rem;">
+                                    <i class="bi bi-file-earmark-plus" style="margin-right: 0.5rem;"></i> Add New Lesson
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            
+                            <!-- Modal Body -->
+                            <div class="modal-body" style="padding: 2rem;">
+                                <div class="alert alert-light mb-4" role="alert" style="border-left: 4px solid #0066cc;">
+                                    <strong>Course:</strong> {{ course.title }}
+                                </div>
+
+                                <form id="addLessonForm{{ course.id }}" method="POST" action="{{ url_for('add_lesson', course_id=course.id) }}">
+                                    <!-- Lesson Title -->
+                                    <div class="mb-3">
+                                        <label for="lessonTitle{{ course.id }}" class="form-label" style="font-weight: 600; color: #1f2937;">
+                                            <i class="bi bi-book" style="color: #0066cc; margin-right: 0.5rem;"></i> Lesson Title
+                                        </label>
+                                        <input type="text" class="form-control" id="lessonTitle{{ course.id }}" name="title" 
+                                               placeholder="e.g., Lesson 1: Introduction to Databases" required
+                                               style="border: 2px solid #e5e7eb; border-radius: 10px; padding: 0.75rem 1rem;">
+                                        <small class="text-muted" style="display: block; margin-top: 0.5rem;">Make it clear and specific to the topic</small>
+                                    </div>
+
+                                    <!-- Duration -->
+                                    <div class="mb-3">
+                                        <label for="duration{{ course.id }}" class="form-label" style="font-weight: 600; color: #1f2937;">
+                                            <i class="bi bi-clock" style="color: #0066cc; margin-right: 0.5rem;"></i> Duration (minutes)
+                                        </label>
+                                        <input type="number" class="form-control" id="duration{{ course.id }}" name="duration_minutes" 
+                                               placeholder="e.g., 45" min="0" value="0"
+                                               style="border: 2px solid #e5e7eb; border-radius: 10px; padding: 0.75rem 1rem;">
+                                        <small class="text-muted" style="display: block; margin-top: 0.5rem;">Estimated duration of the lesson</small>
+                                    </div>
+
+                                    <!-- Lesson Content -->
+                                    <div class="mb-3">
+                                        <label for="content{{ course.id }}" class="form-label" style="font-weight: 600; color: #1f2937;">
+                                            <i class="bi bi-file-text" style="color: #0066cc; margin-right: 0.5rem;"></i> Lesson Content
+                                        </label>
+                                        <textarea class="form-control" id="content{{ course.id }}" name="content" rows="6" required
+                                                  placeholder="Write your lesson content here. Include explanations, examples, and key concepts."
+                                                  style="border: 2px solid #e5e7eb; border-radius: 10px; padding: 0.75rem 1rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"></textarea>
+                                        <small class="text-muted" style="display: block; margin-top: 0.5rem;">You can use plain text, HTML tags, or Markdown.</small>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- Modal Footer -->
+                            <div class="modal-footer" style="border-top: 1px solid #e5e7eb; padding: 1.5rem;">
+                                <button type="button" class="btn" style="background: white; border: 2px solid #e5e7eb; color: #6b7280; font-weight: 600; border-radius: 10px; padding: 0.6rem 1.5rem;" data-bs-dismiss="modal">
+                                    <i class="bi bi-x-circle" style="margin-right: 0.5rem;"></i> Cancel
+                                </button>
+                                <button type="submit" class="btn" form="addLessonForm{{ course.id }}" style="background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%); color: white; font-weight: 600; border: none; border-radius: 10px; padding: 0.6rem 1.5rem;">
+                                    <i class="bi bi-check-circle" style="margin-right: 0.5rem;"></i> Add Lesson
+                                </button>
                             </div>
                         </div>
                     </div>
