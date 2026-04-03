@@ -49,3 +49,5 @@ Preview :
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0d2e21ac-098e-4eb2-bfe8-b0d24aa47bed" />
 
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/31c062ef-094a-463f-9bed-019f3e849918" />
