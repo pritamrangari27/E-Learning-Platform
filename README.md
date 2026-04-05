@@ -18,13 +18,6 @@ A modern, full-featured e-learning platform built with Flask and SQLAlchemy. Stu
 - View student enrollments
 - Track student progress
 
-## Tech Stack
-
-- **Backend**: Flask
-- **Database**: SQLite with SQLAlchemy ORM
-- **Frontend**: Bootstrap 5.3.0, Bootstrap Icons 1.11.0, Custom CSS
-- **Authentication**: Session-based with password hashing
-
 ## Project Structure
 
 ```
