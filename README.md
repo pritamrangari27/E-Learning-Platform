@@ -1,6 +1,6 @@
 # E-Learning Platform
 
-A modern, full-featured e-learning platform built with Flask and SQLAlchemy. Students can enroll in courses, track their progress, and learn from instructors.
+A modern, full-featured e-learning platform built with Flask and SQL. Students can enroll in courses, track their progress, and learn from instructors.
 
 ## Features
 
