@@ -23,19 +23,19 @@ A modern, full-featured e-learning platform built with Flask and SQL. Students c
 ```
 E-Learning Platform/
 ├── app/
-│   ├── __init__.py          # Flask app factory and all routes
-│   ├── models.py            # Database models
-│   ├── templates/           # HTML templates
-│   │   ├── landing.html     # Landing/login/register page
-│   │   ├── base.html        # Base template
+│   ├── __init__.py          
+│   ├── models.py          
+│   ├── templates/           
+│   │   ├── landing.html   
+│   │   ├── base.html        
 │   │   ├── student_dashboard.html
 │   │   ├── instructor_dashboard.html
-│   │   ├── courses.html     # Browse all courses
+│   │   ├── courses.html
 │   │   └── ... (other templates)
-│   └── static/              # CSS and static files
-├── run.py                   # Entry point
-├── requirements.txt         # Python dependencies
-└── elearning.db            # SQLite database
+│   └── static/             
+├── run.py                   
+├── requirements.txt         
+└── elearning.db           
 ```
 
 Preview :
